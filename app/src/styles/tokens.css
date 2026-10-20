@@ -1,8 +1,15 @@
 :root {
+	/*
+	  La página ya es oscura (escritorio + fichas claras).
+	  Sin esto, Safari iOS en Dark Mode invierte fondos/textos y
+	  deja sellos rojos y dossiers abiertos ilegibles.
+	*/
+	color-scheme: dark;
+
 	/* Bureau detective — compartido landing + puzzles */
 	--color-ink: #1c1914;
 	--color-ink-soft: #3a342c;
-	--color-ink-muted: #6b6256;
+	--color-ink-muted: #5a5248;
 	--color-paper: #f3ebde;
 	--color-paper-warm: #ebe4d4;
 	--color-paper-dark: #12100e;
@@ -14,9 +21,10 @@
 	--color-accent: #8b3a2a;
 	--color-accent-soft: rgba(139, 58, 42, 0.1);
 	--color-accent-line: rgba(28, 25, 20, 0.22);
-	--color-stamp: #8b3a2a;
-	--color-success: #3d6b45;
+	--color-stamp: #9a4230;
+	--color-success: #2f5a38;
 	--color-danger: #9b3b32;
+	--color-danger-on-dark: #e8a39c;
 	--color-lock: #5c5348;
 
 	--font-display: 'Libre Baskerville', 'Palatino Linotype', Georgia, serif;

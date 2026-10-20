@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type CSSProperties, type FormEvent } from 'react';
 import {
 	hasFinaleBeenNotified,
 	notifyFinaleComplete,
@@ -7,7 +7,163 @@ import { goHome } from '@/lib/navigation';
 import { useProgress } from '@/lib/progress';
 
 const FINALE_ANSWER = 'yoel';
-const KAI_MOTO_SRC = `${import.meta.env.BASE_URL}finale/kai-moto.jpg`;
+const finaleAsset = (file: string) =>
+	`${import.meta.env.BASE_URL}finale/${file}`;
+
+const SUSPECTS = [
+	{
+		id: 'kai',
+		name: 'Kai',
+		src: finaleAsset('kai-moto.jpg'),
+		alt: 'Kai en su moto Vespa roja',
+		x: 50,
+		y: 5,
+		r: -6,
+		mx: 22,
+		my: 42,
+		pin: 'ruby',
+	},
+	{
+		id: 'inma',
+		name: 'Inma',
+		src: finaleAsset('inma-sospechosa.jpg'),
+		alt: 'Inma y la Peque, mirando con sospecha',
+		x: 18,
+		y: 7,
+		r: 8,
+		mx: 52,
+		my: 34,
+		pin: 'brass',
+	},
+	{
+		id: 'presi',
+		name: 'Presi',
+		src: finaleAsset('presi-sospechoso.jpg'),
+		alt: 'Presi y el Capi, actitud sospechosa',
+		x: 90,
+		y: 6,
+		r: -4,
+		mx: 84,
+		my: 48,
+		pin: 'navy',
+	},
+	{
+		id: 'emilio',
+		name: 'Emilio',
+		src: finaleAsset('emilio-sospechoso.jpg'),
+		alt: 'Emilio y Rafa, mirando con sospecha',
+		x: 93,
+		y: 28,
+		r: 7,
+		mx: 10,
+		my: 52,
+		pin: 'ruby',
+	},
+	{
+		id: 'berta',
+		name: 'Berta',
+		src: finaleAsset('berta-sospechosa.jpg'),
+		alt: 'Berta con mirada sospechosa',
+		x: 91,
+		y: 50,
+		r: -9,
+		mx: 38,
+		my: 40,
+		pin: 'brass',
+	},
+	{
+		id: 'abupepe',
+		name: 'AbuPepe',
+		src: finaleAsset('abupepe-sospechoso.jpg'),
+		alt: 'AbuPepe con sonrisa cómplice',
+		x: 88,
+		y: 72,
+		r: 5,
+		mx: 70,
+		my: 36,
+		pin: 'forest',
+	},
+	{
+		id: 'eloy',
+		name: 'Eloy',
+		src: finaleAsset('eloy-sospechoso.jpg'),
+		alt: 'Eloy e Isa, cómplices',
+		x: 72,
+		y: 93,
+		r: -7,
+		mx: 18,
+		my: 44,
+		band: 'bottom' as const,
+		pin: 'navy',
+	},
+	{
+		id: 'juani',
+		name: 'Juani',
+		src: finaleAsset('juani-sospechoso.jpg'),
+		alt: 'Juani y Luca, sospechosos',
+		x: 48,
+		y: 95,
+		r: 4,
+		mx: 48,
+		my: 38,
+		band: 'bottom' as const,
+		pin: 'ruby',
+	},
+	{
+		id: 'saioa',
+		name: 'Saioa',
+		src: finaleAsset('saioa-sospechosa.jpg'),
+		alt: 'Saioa con expresión sospechosa',
+		x: 24,
+		y: 92,
+		r: -3,
+		mx: 80,
+		my: 50,
+		band: 'bottom' as const,
+		pin: 'brass',
+	},
+	{
+		id: 'unai',
+		name: 'Unai',
+		src: finaleAsset('unai-sospechoso.jpg'),
+		alt: 'Unai con mirada sospechosa',
+		x: 7,
+		y: 68,
+		r: 6,
+		mx: 32,
+		my: 52,
+		band: 'bottom' as const,
+		pin: 'forest',
+	},
+	{
+		id: 'yoel',
+		name: 'Yoel',
+		src: finaleAsset('yoel-sospechoso.jpg'),
+		alt: 'Yoel con expresión culpable',
+		x: 6,
+		y: 42,
+		r: -8,
+		mx: 66,
+		my: 42,
+		band: 'bottom' as const,
+		pin: 'navy',
+	},
+	{
+		id: 'george',
+		name: 'George',
+		src: finaleAsset('george-sospechoso.jpg'),
+		alt: 'George el gato, sospechoso',
+		x: 9,
+		y: 20,
+		r: 10,
+		mx: 6,
+		my: 36,
+		pin: 'ruby',
+	},
+] as const;
+
+const TOP_SUSPECTS = SUSPECTS.filter((s) => !('band' in s && s.band === 'bottom'));
+const BOTTOM_SUSPECTS = SUSPECTS.filter((s) => 'band' in s && s.band === 'bottom');
 
 const normalizeAnswer = (value: string): string =>
 	value
@@ -20,6 +176,34 @@ type FinalePhase = 'ask' | 'sending' | 'sent' | 'already';
 
 const initialPhase = (): FinalePhase =>
 	hasFinaleBeenNotified() ? 'already' : 'ask';
+
+const SuspectPin = ({
+	suspect,
+	index,
+}: {
+	suspect: (typeof SUSPECTS)[number];
+	index: number;
+}) => (
+	<li
+		style={
+			{
+				'--x': suspect.x,
+				'--y': suspect.y,
+				'--r': `${suspect.r}deg`,
+				'--mx': suspect.mx,
+				'--my': suspect.my,
+				'--delay': `${0.06 + index * 0.045}s`,
+			} as CSSProperties
+		}
+		data-pin={suspect.pin}
+	>
+		<figure className="finale-photo-card">
+			<span className="finale-chincheta" aria-hidden="true" />
+			<img src={suspect.src} alt={suspect.alt} />
+			<figcaption>{suspect.name}</figcaption>
+		</figure>
+	</li>
+);
 
 export const FinalePage = () => {
 	const { isPuzzleCompleted } = useProgress();
@@ -80,65 +264,91 @@ export const FinalePage = () => {
 			? 'Una pregunta más antes de la sentencia.'
 			: 'El regalo va de camino a tu correo.';
 
-	return (
-		<div className="landing-shell finale-shell">
-			<div className="landing-card finale-card">
-				<p className="label">Archivo clasificado · Cierre</p>
-				<h1>{headline}</h1>
-				<p className="landing-kicker">{kicker}</p>
+	const showSuspects = phase === 'ask' || phase === 'sending';
 
-				{(phase === 'ask' || phase === 'sending') && (
+	return (
+		<div
+			className={`landing-shell finale-shell${showSuspects ? ' finale-shell--board' : ''}`}
+		>
+			<div className="finale-stage">
+				{showSuspects && (
 					<>
-						<p className="landing-copy finale-question">
-							¿Quién tiró los platos en nuestra primera cita?
-						</p>
-						<form className="finale-form" onSubmit={handleSubmit}>
-							<input
-								type="text"
-								value={answer}
-								onChange={(event) => {
-									setAnswer(event.target.value);
-									setError(null);
-								}}
-								placeholder="Nombre"
-								autoComplete="off"
-								spellCheck={false}
-								aria-label="Respuesta a la última pregunta"
-								disabled={phase === 'sending'}
-							/>
-							<button
-								type="submit"
-								className="primary-button"
-								disabled={phase === 'sending' || !answer.trim()}
-							>
-								{phase === 'sending' ? 'Enviando…' : 'Cerrar el caso'}
-							</button>
-						</form>
-						{error && (
-							<p className="continue-feedback error" role="status">
-								{error}
-							</p>
-						)}
+						<ul
+							className="finale-suspects finale-suspects--top"
+							aria-label="Sospechosos (arriba)"
+						>
+							{TOP_SUSPECTS.map((suspect, index) => (
+								<SuspectPin key={suspect.id} suspect={suspect} index={index} />
+							))}
+						</ul>
+						<ul
+							className="finale-suspects finale-suspects--bottom"
+							aria-label="Sospechosos (abajo)"
+						>
+							{BOTTOM_SUSPECTS.map((suspect, index) => (
+								<SuspectPin
+									key={suspect.id}
+									suspect={suspect}
+									index={index + TOP_SUSPECTS.length}
+								/>
+							))}
+						</ul>
 					</>
 				)}
 
-				{(phase === 'sent' || phase === 'already') && (
-					<p className="landing-copy">
-						{phase === 'already'
-							? 'Esta sentencia ya se dictó desde este navegador. Revisa tu correo si aún no ha llegado.'
-							: 'Cinco dossiers. Una última confesión. En el correo: la prueba del delito.'}
-					</p>
-				)}
+				<div className="landing-card finale-card">
+					<p className="label">Archivo clasificado · Cierre</p>
+					<h1>{headline}</h1>
+					<p className="landing-kicker">{kicker}</p>
 
-				<button type="button" className="text-link" onClick={goHome}>
-					← Volver al archivo
-				</button>
+					{showSuspects && (
+						<>
+							<p className="landing-copy finale-question">
+								¿Quién tiró los platos en nuestra primera cita?
+							</p>
+							<form className="finale-form" onSubmit={handleSubmit}>
+								<input
+									type="text"
+									value={answer}
+									onChange={(event) => {
+										setAnswer(event.target.value);
+										setError(null);
+									}}
+									placeholder="Nombre"
+									autoComplete="off"
+									spellCheck={false}
+									aria-label="Respuesta a la última pregunta"
+									disabled={phase === 'sending'}
+								/>
+								<button
+									type="submit"
+									className="primary-button"
+									disabled={phase === 'sending' || !answer.trim()}
+								>
+									{phase === 'sending' ? 'Enviando…' : 'Cerrar el caso'}
+								</button>
+							</form>
+							{error && (
+								<p className="continue-feedback error" role="status">
+									{error}
+								</p>
+							)}
+						</>
+					)}
+
+					{(phase === 'sent' || phase === 'already') && (
+						<p className="landing-copy">
+							{phase === 'already'
+								? 'Esta sentencia ya se dictó desde este navegador. Revisa tu correo si aún no ha llegado.'
+								: 'Cinco dossiers. Una última confesión. Adjunto en el correo: la prueba del delito.'}
+						</p>
+					)}
+
+					<button type="button" className="text-link" onClick={goHome}>
+						← Volver al archivo
+					</button>
+				</div>
 			</div>
-
-			<figure className="finale-photo-card" aria-label="Kai en moto">
-				<img src={KAI_MOTO_SRC} alt="Kai en su moto Vespa roja" />
-				<figcaption>Sospechoso · Kai</figcaption>
-			</figure>
 		</div>
 	);
 };

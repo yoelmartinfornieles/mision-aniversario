@@ -20,6 +20,10 @@
 		"noEmit": true,
 		"jsx": "react-jsx",
 
+		/* Type checking */
+		"strict": true,
+		"baseUrl": ".",
+
 		/* Linting */
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,

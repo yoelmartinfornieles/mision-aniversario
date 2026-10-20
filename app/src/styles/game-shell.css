@@ -132,23 +132,35 @@
 
 	.hex-topbar,
 	.mahjong-topbar {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr) auto auto;
+		align-items: center;
 		gap: 6px;
 		min-height: 52px;
 		padding: 6px 8px;
+		width: 100%;
 		max-width: 100%;
 		min-width: 0;
+		box-sizing: border-box;
+		overflow: visible;
 	}
 
+	.hex-shell .topbar-left,
+	.mahjong-shell .topbar-left,
 	.hex-shell .topbar-actions,
-	.mahjong-shell .topbar-actions {
-		gap: 5px;
+	.mahjong-shell .topbar-actions,
+	.hex-shell .brand-block,
+	.mahjong-shell .brand-block {
+		display: contents;
 	}
 
 	.hex-shell .hint-button,
 	.mahjong-shell .hint-button {
-		min-width: 44px;
-		min-height: 44px;
-		padding: 0.35rem 0.45rem;
+		min-width: 40px;
+		width: 40px;
+		min-height: 40px;
+		height: 40px;
+		padding: 0;
 		font-size: 0.95rem;
 	}
 

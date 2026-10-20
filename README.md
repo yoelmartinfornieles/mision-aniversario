@@ -1,9 +1,17 @@
-# Misión: Aniversario
+# El caso del aniversario
 
 Escape room web personal con estética de archivo clasificado. Cinco dossiers, avance por códigos de guardado y un cierre por email cuando el caso queda resuelto.
 
 > **Archivo clasificado · Confidencial**  
-> *Una aventura acaba… pero otra empieza.*
+> *El expediente lleva nueve años abierto. Hoy toca cerrarlo.*
+
+![Portada del archivo — El caso del aniversario](docs/screenshots/01-landing.png)
+
+<p align="center">
+  <img src="docs/screenshots/02-murdoku.png" alt="Dossier 1 — Murdoku" width="32%" />
+  <img src="docs/screenshots/03-hexagon.png" alt="Dossier 2 — Hexágono" width="32%" />
+  <img src="docs/screenshots/04-mahjong.png" alt="Dossier 4 — Mahjong" width="32%" />
+</p>
 
 ## Qué es
 
@@ -38,7 +46,7 @@ Requisitos: Node.js 20+ recomendado.
 ```bash
 cd app
 npm install
-cp .env.example .env   # opcional: Formspree para el email final
+cp .env.example .env   # opcional: Apps Script para el email final
 npm run dev
 ```
 
@@ -52,42 +60,51 @@ npm run dev
 | `npm run lint` | Oxlint |
 | `npm run format` | Prettier |
 
-## Email al cerrar el caso (dossier 5)
+## Emails (Google Apps Script)
 
-Al resolver el último dossier, la app hace un `POST` a Formspree **una sola vez por navegador** (marca en `localStorage`).
+Invitación (13 nov) y cierre del caso salen como **mail normal desde Gmail** (asunto, HTML “archivo clasificado”, nombre de remitente y adjunto de entradas en el cierre), vía un web app de Apps Script.
 
-1. Crea un formulario en [Formspree](https://formspree.io).
-2. Destino principal: la dirección de quien debe recibir el regalo.
-3. Añade una notificación extra / BCC **en el dashboard de Formspree** (no en el código cliente: acabaría en el bundle).
-4. Copia el endpoint a `app/.env`:
+### Cierre del caso (dossier 5)
+
+Al cerrar el caso (última pregunta), la app hace un `POST` al web app **una sola vez por navegador** (`localStorage`), con el adjunto `entradas-disney.jpg`.
+
+En `app/.env` (y secrets de Pages):
 
 ```bash
-VITE_FORMSPREE_ENDPOINT=https://formspree.io/f/xxxx
+VITE_GAS_WEBAPP_URL=https://script.google.com/macros/s/XXXX/exec
+VITE_GAS_MAIL_SECRET=mismo-que-MAIL_SECRET-del-script
+# Opcional — link Airbnb en el cuerpo del mail:
+# VITE_AIRBNB_URL=https://www.airbnb.com/rooms/XXXX
 ```
 
-Sin esta variable el juego funciona igual; el envío se omite y queda un aviso en consola.
+Sin esas variables el juego funciona igual; el envío se omite.
 
-Detalle de variables: [`app/.env.example`](./app/.env.example).
+La destinataria y un BCC opcional viven en **propiedades del script** (`RECIPIENT_EMAIL`, `BCC_EMAIL`), no en el cliente.
 
-## Email de invitación (13 de noviembre)
+### Invitación (13 de noviembre)
 
-El frontend no puede programar envíos. Un GitHub Action hace un `POST` a Formspree el **13 de noviembre a las 09:00 UTC** con el enlace al juego y el tono de “dossier abierto”.
+Un GitHub Action hace `POST` el **13 de noviembre a las 09:00 UTC**.
 
-**Idempotencia:** el cron de GitHub es anual, pero el script (y un gate en el workflow) solo envían si el año UTC es **2026**. Así no se reenvía en 2027+. Tras el envío real, desactiva el workflow (**Actions → Invite email → ⋯ → Disable workflow**) o borra el `schedule`.
+**Idempotencia:** el cron es anual; el script solo envía si el año UTC es **2026**. 
 
-1. Despliega la app y anota la URL pública.
-2. En el repo → **Settings → Secrets and variables → Actions**:
-   - `FORMSPREE_ENDPOINT` — mismo `https://formspree.io/f/xxxx` del `.env`
-   - `SITE_URL` — URL pública sin barra final (p. ej. `https://tu-dominio.com`)
-3. Prueba: **Actions → Invite email (13 Nov) → Run workflow**.
-4. Para forzar fuera de 2026 (solo pruebas): variable de Actions `FORCE_INVITE=1`.
+1. Prueba: **Actions → Invite email (13 Nov) → Run workflow**.
+2. Fuera de 2026: variable `FORCE_INVITE=1`.
 
 Prueba local:
 
 ```bash
-FORMSPREE_ENDPOINT=https://formspree.io/f/xxxx \
+GAS_WEBAPP_URL=https://script.google.com/macros/s/XXXX/exec \
+GAS_MAIL_SECRET=… \
 SITE_URL=https://tu-dominio.com \
 node scripts/send-invite-email.mjs
+```
+
+Ambos mails de prueba:
+
+```bash
+GAS_WEBAPP_URL=… GAS_MAIL_SECRET=… SITE_URL=… \
+TEST_EMAIL_TO=tu@email.com \
+node scripts/send-test-emails.mjs
 ```
 
 ## Despliegue (GitHub Pages)
@@ -95,7 +112,7 @@ node scripts/send-invite-email.mjs
 El workflow [`.github/workflows/deploy-pages.yml`](./.github/workflows/deploy-pages.yml) construye `app/` y publica en Pages al hacer push a `aniversary` o `main`.
 
 1. Repo → **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-2. (Opcional) Secret `VITE_FORMSPREE_ENDPOINT` para el email del dossier 5.
+2. (Opcional) Secrets `VITE_GAS_WEBAPP_URL`, `VITE_GAS_MAIL_SECRET`, `VITE_AIRBNB_URL`.
 3. URL esperada: `https://yoelmartinfornieles.github.io/mision-aniversario/`
 4. Pon esa URL (sin barra final) en el secret `SITE_URL` del workflow de invitación.
 
@@ -103,4 +120,4 @@ En CI el `base` de Vite es `/mision-aniversario/`; en local sigue siendo `/`.
 
 ## Privacidad
 
-Repo pensado como proyecto personal / sorpresa. No publiques spoilers de códigos de guardado ni el contenido del email final si la destinataria aún no ha jugado.
+Repo pensado como proyecto personal / sorpresa. No publiques spoilers de códigos de guardado ni el contenido del email final si la destinataria aún no ha jugado... Por favor!

@@ -17,6 +17,16 @@ export const formatElapsedLabel = (totalSeconds: number): string => {
 	return `${minutes}:${seconds}`;
 };
 
+const splitElapsed = (totalSeconds: number) => {
+	const safe = Math.max(0, Math.floor(totalSeconds));
+	return {
+		minutes: Math.floor(safe / 60)
+			.toString()
+			.padStart(2, '0'),
+		seconds: (safe % 60).toString().padStart(2, '0'),
+	};
+};
+
 export type PuzzleClockProps = {
 	mode?: 'elapsed' | 'countdown';
 	/** When false, the display freezes at the current ref value. */
@@ -91,6 +101,7 @@ export const PuzzleClock = ({
 	}, [mode, running, expired, seconds]);
 
 	const label = formatElapsedLabel(seconds);
+	const parts = splitElapsed(seconds);
 	const isUrgent =
 		mode === 'countdown' && seconds > 0 && seconds <= URGENT_SECONDS;
 	const isCritical =
@@ -116,7 +127,20 @@ export const PuzzleClock = ({
 			}
 			aria-live={isCritical ? 'assertive' : 'off'}
 		>
-			{label}
+			{mode === 'countdown' ? (
+				<>
+					<span className="timer-tag" aria-hidden="true">
+						T−
+					</span>
+					<span className="timer-readout" aria-hidden="true">
+						<span className="timer-mm">{parts.minutes}</span>
+						<span className="timer-colon">:</span>
+						<span className="timer-ss">{parts.seconds}</span>
+					</span>
+				</>
+			) : (
+				label
+			)}
 		</div>
 	);
 };

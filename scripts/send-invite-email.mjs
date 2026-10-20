@@ -1,19 +1,27 @@
 #!/usr/bin/env node
 /**
- * Sends the launch invitation via Formspree.
+ * Sends the launch invitation via Google Apps Script mailer.
  * Used by the scheduled GitHub Action (13 Nov) and for manual dry runs.
  *
  * Required env:
- *   FORMSPREE_ENDPOINT  — https://formspree.io/f/xxxx
- *   SITE_URL            — public game URL (e.g. https://….vercel.app)
+ *   GAS_WEBAPP_URL   — Apps Script web app URL (…/exec)
+ *   GAS_MAIL_SECRET  — same as Script property MAIL_SECRET
+ *   SITE_URL         — public game URL
  *
  * Idempotency (yearly cron):
  *   INVITE_TARGET_YEAR  — default 2026; skip (exit 0) if UTC year differs
  *   FORCE_INVITE=1      — bypass the year gate (manual re-test)
+ *
+ * Optional:
+ *   EMAIL_TO  — override recipient (else Script property RECIPIENT_EMAIL)
  */
 
-const endpoint = process.env.FORMSPREE_ENDPOINT?.trim();
+import { postMail } from './lib/postMail.mjs';
+
+const endpoint = process.env.GAS_WEBAPP_URL?.trim();
+const secret = process.env.GAS_MAIL_SECRET?.trim();
 const siteUrl = process.env.SITE_URL?.trim()?.replace(/\/$/, '');
+const emailTo = process.env.EMAIL_TO?.trim();
 const targetYear = Number(process.env.INVITE_TARGET_YEAR ?? '2026');
 const forceInvite = process.env.FORCE_INVITE === '1';
 const utcYear = new Date().getUTCFullYear();
@@ -26,7 +34,12 @@ if (!forceInvite && utcYear !== targetYear) {
 }
 
 if (!endpoint) {
-	console.error('Missing FORMSPREE_ENDPOINT');
+	console.error('Missing GAS_WEBAPP_URL');
+	process.exit(1);
+}
+
+if (!secret) {
+	console.error('Missing GAS_MAIL_SECRET');
 	process.exit(1);
 }
 
@@ -35,19 +48,17 @@ if (!siteUrl) {
 	process.exit(1);
 }
 
-const subject = 'Misión: Aniversario — dossier abierto';
+const subject = 'Clasificado · Hay un expediente con tu nombre';
 
 const message = `Detective,
 
 Hay un expediente nuevo sobre tu mesa.
 Clasificado. Confidencial. Con tu nombre en la portada.
 
-Nueve años de pistas. Miles de recuerdos archivados.
-Una aventura acaba… pero otra empieza.
+El expediente lleva nueve años abierto. Hoy toca cerrarlo.
 
-Tu misión, si decides aceptarla:
-abrir el archivo, bajar a la sala de pruebas
-y resolver cuatro escenas de vuestro pasado.
+Abre el archivo. Baja a la sala de pruebas.
+Resuelve cuatro escenas de vuestro pasado.
 El regalo —el de verdad— solo llega si cierras el caso.
 
 Enlace al archivo:
@@ -57,24 +68,20 @@ El reloj no espera.
 
 — Archivo clasificado · Confidencial`;
 
-const body = new FormData();
-body.append('subject', subject);
-body.append('message', message);
-body.append('kind', 'launch-invite');
-body.append('siteUrl', siteUrl);
-body.append('scheduledFor', '2026-11-13');
-body.append('sentAt', new Date().toISOString());
-
-const response = await fetch(endpoint, {
-	method: 'POST',
-	headers: { Accept: 'application/json' },
-	body,
-});
-
-if (!response.ok) {
-	const text = await response.text().catch(() => '');
-	console.error('Formspree request failed:', response.status, text);
+try {
+	await postMail({
+		endpoint,
+		secret,
+		subject,
+		message,
+		to: emailTo,
+		variant: 'invite',
+		ctaUrl: siteUrl,
+		ctaLabel: 'Abrir el expediente',
+		preheader: 'Hay un expediente con tu nombre en la portada.',
+	});
+	console.log('Invite email sent OK →', siteUrl, emailTo ? `(to ${emailTo})` : '(default recipient)');
+} catch (error) {
+	console.error('Mailer request failed:', error.message || error);
 	process.exit(1);
 }
-
-console.log('Invite email sent OK →', siteUrl);

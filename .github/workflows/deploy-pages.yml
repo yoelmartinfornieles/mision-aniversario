@@ -1,5 +1,7 @@
 # Build the Vite app and publish to GitHub Pages.
-# Optional secret: VITE_FORMSPREE_ENDPOINT (baked into the client bundle at build time).
+# Optional secrets (baked into the client at build time):
+#   VITE_GAS_WEBAPP_URL, VITE_GAS_MAIL_SECRET, VITE_AIRBNB_URL
+# See scripts/google-apps-script/README.md
 
 name: Deploy GitHub Pages
 
@@ -38,7 +40,9 @@ jobs:
       - name: Build
         working-directory: app
         env:
-          VITE_FORMSPREE_ENDPOINT: ${{ secrets.VITE_FORMSPREE_ENDPOINT }}
+          VITE_GAS_WEBAPP_URL: ${{ secrets.VITE_GAS_WEBAPP_URL }}
+          VITE_GAS_MAIL_SECRET: ${{ secrets.VITE_GAS_MAIL_SECRET }}
+          VITE_AIRBNB_URL: ${{ secrets.VITE_AIRBNB_URL }}
         run: npm run build
 
       - name: Upload Pages artifact

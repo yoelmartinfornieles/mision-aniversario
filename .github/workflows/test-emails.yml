@@ -1,16 +1,16 @@
-# One-shot: envía invitación + finale de prueba a las 05:00 CEST del 19 oct 2026.
-# Solo debe llegar a fan_cassidy@hotmail.com — configura el destino del form Formspree
-# a esa dirección (sin BCC/notificaciones extra) antes del cron.
+# One-shot: reintento de invitación + finale de prueba.
+# Destino: TEST_EMAIL_TO (default en el script: fan_cassidy@hotmail.com).
 #
-# Secrets: FORMSPREE_ENDPOINT, SITE_URL
+# Secrets: GAS_WEBAPP_URL, GAS_MAIL_SECRET, SITE_URL
+# Optional secret: AIRBNB_URL (link en el mail de cierre)
 # Tras la prueba: borra o desactiva este workflow.
 
-name: Test emails (05:00 CEST)
+name: Test emails (retry)
 
 on:
   schedule:
-    # 05:00 Europe/Madrid (CEST, UTC+2) · 19 octubre 2026 → 03:00 UTC
-    - cron: '0 3 19 10 *'
+    # 17:00 Europe/Madrid (CEST, UTC+2) · 19 octubre 2026 → 15:00 UTC
+    - cron: '0 15 19 10 *'
   workflow_dispatch:
 
 jobs:
@@ -22,9 +22,9 @@ jobs:
 
       - name: Send both test emails
         env:
-          FORMSPREE_ENDPOINT: ${{ secrets.FORMSPREE_ENDPOINT }}
+          GAS_WEBAPP_URL: ${{ secrets.GAS_WEBAPP_URL }}
+          GAS_MAIL_SECRET: ${{ secrets.GAS_MAIL_SECRET }}
           SITE_URL: ${{ secrets.SITE_URL }}
+          AIRBNB_URL: ${{ secrets.AIRBNB_URL }}
           TEST_EMAIL_TO: fan_cassidy@hotmail.com
-          # Solo si Formspree → únicamente fan_cassidy@hotmail.com (sin BCC)
-          I_SET_FORMSPREE_TO_TEST: '1'
         run: node scripts/send-test-emails.mjs
