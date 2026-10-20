@@ -1,4 +1,5 @@
 import { useId, useState } from 'react';
+import { audio } from '@/lib/audio';
 import { useModalA11y } from './useModalA11y';
 
 type SaveCodeModalProps = {
@@ -28,8 +29,10 @@ export const SaveCodeModal = ({
 	const handleCopy = async () => {
 		try {
 			await navigator.clipboard.writeText(code);
+			audio.play('copy');
 			setCopyStatus('ok');
 		} catch {
+			audio.play('error');
 			setCopyStatus('error');
 		}
 	};

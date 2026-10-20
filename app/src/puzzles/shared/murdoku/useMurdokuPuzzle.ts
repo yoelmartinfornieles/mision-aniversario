@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { audio, usePuzzleAmbient } from '@/lib/audio';
 import {
 	DRAFT_CLOCK_FLUSH_MS,
 	ProgressService,
@@ -129,6 +130,7 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 
 	const [draft] = useState(() => readMurdokuDraft(puzzleId, countdownSeconds));
 	const [started, setStarted] = useState(() => draft?.started ?? false);
+	usePuzzleAmbient(started, puzzleId);
 	const [selectedSuspectId, setSelectedSuspectId] = useState<number | null>(
 		null
 	);
@@ -284,12 +286,14 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 		const key = toCellKey(row, column);
 		const furniture = furnitureCells[key];
 		if (furniture?.role === 'blocking') {
+			audio.play('error');
 			setStatus(`Esa casilla está bloqueada por ${furniture.kind}`);
 			return;
 		}
 
 		if (markMode) {
 			if (placements[key] !== undefined) {
+				audio.play('error');
 				setStatus('No se puede tachar una casilla ocupada');
 				return;
 			}
@@ -300,6 +304,7 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 				else next[key] = true;
 				return next;
 			});
+			audio.play('place');
 			setStatus(emptyMarks[key] ? 'Marca X retirada' : 'Casilla tachada');
 			return;
 		}
@@ -310,6 +315,7 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 		}
 
 		if (selectedSuspect.id === victimId && !canPlaceVictim) {
+			audio.play('error');
 			setStatus(preVictimError ?? victimWaitPrompt);
 			return;
 		}
@@ -317,6 +323,7 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 		const room = roomMatrix[row][column];
 		const occupantId = placements[key];
 		if (occupantId !== undefined && occupantId !== selectedSuspect.id) {
+			audio.play('error');
 			setStatus(
 				`${suspects.find((suspect) => suspect.id === occupantId)?.name} ya ocupa esa casilla`
 			);
@@ -340,12 +347,14 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 		}
 
 		if (!hasUniqueRowsAndColumns(nextPlacements)) {
+			audio.play('error');
 			setStatus('Esa fila o columna ya está ocupada');
 			return;
 		}
 
 		pushHistory();
 		setPlacements(nextPlacements);
+		audio.play('place');
 
 		if (emptyMarks[key]) {
 			const nextMarks = { ...emptyMarks };
@@ -402,6 +411,7 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 
 	const selectSuspect = (suspectId: number) => {
 		if (boardLocked) return;
+		audio.play('select');
 		setSelectedSuspectId(suspectId);
 		setMarkMode(false);
 	};
@@ -409,16 +419,19 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 	const handleSubmit = () => {
 		if (boardLocked && !solved) return;
 		if (!allPlaced) {
+			audio.play('error');
 			setStatus(
 				`Coloca a todos primero (${Object.keys(placements).length}/${suspects.length})`
 			);
 			return;
 		}
 		if (preVictimError) {
+			audio.play('error');
 			setStatus(preVictimError);
 			return;
 		}
 		if (!isBoardSolved(placements)) {
+			audio.play('error');
 			setStatus('Aún no cuadra del todo — revisa las pistas');
 			return;
 		}
@@ -427,6 +440,7 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 			setSolved(true);
 			setTimedOut(false);
 		}
+		audio.play('solve');
 		setStatus(solvedStatus);
 		clearDraft(puzzleId);
 		completePuzzle(puzzleId);

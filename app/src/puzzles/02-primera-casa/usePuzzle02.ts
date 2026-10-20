@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { audio, usePuzzleAmbient } from '@/lib/audio';
 import {
 	DRAFT_CLOCK_FLUSH_MS,
 	ProgressService,
@@ -98,6 +99,7 @@ export const usePuzzle02 = () => {
 
 	const [draft] = useState(() => readHexDraft());
 	const [started, setStarted] = useState(() => draft?.started ?? false);
+	usePuzzleAmbient(started, PUZZLE_ID);
 	const [placements, setPlacements] = useState<Placement[]>(
 		() => draft?.placements ?? []
 	);
@@ -242,6 +244,7 @@ export const usePuzzle02 = () => {
 				previous.filter((placement) => placement.pieceId !== pieceId)
 			);
 		}
+		audio.play('select');
 		setSelectedId(pieceId);
 		setStatus(`${PIECE_BY_ID[pieceId].label}: colócala en el plano`);
 	};
@@ -288,6 +291,7 @@ export const usePuzzle02 = () => {
 		);
 		const cells = placeShapeAt(shape, anchor, 0);
 		if (!canPlaceCells(cells, occupancy, selectedId)) {
+			audio.play('error');
 			setStatus('No encaja ahí — rota, voltea o elige otro hueco');
 			return false;
 		}
@@ -308,11 +312,13 @@ export const usePuzzle02 = () => {
 		setHoverCell(null);
 
 		if (isBoardSolved(nextPlacements)) {
+			audio.play('solve');
 			setStatus('El plano encaja. La casa vuelve a ser un hogar.');
 			clearDraft(PUZZLE_ID);
 			completePuzzle(PUZZLE_ID);
 			setShowSaveCode(true);
 		} else {
+			audio.play('place');
 			const remaining = FREE_PIECE_IDS.length - nextPlacements.length;
 			setStatus(
 				remaining === 0
@@ -358,15 +364,18 @@ export const usePuzzle02 = () => {
 
 	const handleSubmit = () => {
 		if (placements.length < FREE_PIECE_IDS.length) {
+			audio.play('error');
 			setStatus(
 				`Faltan ${FREE_PIECE_IDS.length - placements.length} estancias por colocar`
 			);
 			return;
 		}
 		if (!isBoardSolved(placements)) {
+			audio.play('error');
 			setStatus('Aún no es hogar — prueba otra disposición');
 			return;
 		}
+		audio.play('solve');
 		setStatus('El plano encaja. La casa vuelve a ser un hogar.');
 		clearDraft(PUZZLE_ID);
 		completePuzzle(PUZZLE_ID);

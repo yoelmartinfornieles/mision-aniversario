@@ -591,6 +591,23 @@
 	font-size: 0.85rem;
 }
 
+.landing-credit {
+	width: min(720px, 100%);
+	margin-top: clamp(8px, 2vw, 16px);
+	padding-top: 20px;
+	border-top: 1px dashed rgba(217, 199, 163, 0.22);
+	text-align: center;
+	font-family: var(--font-stamp);
+	font-size: 0.75rem;
+	line-height: 1.55;
+	letter-spacing: 0.04em;
+	color: rgba(217, 199, 163, 0.55);
+}
+
+.landing-credit p {
+	margin: 0;
+}
+
 .code-hint strong,
 .continue-code {
 	font-family: var(--font-stamp);
@@ -698,7 +715,8 @@
 }
 
 .finale-shell--board {
-	overflow: visible;
+	overflow: hidden;
+	min-height: 100dvh;
 	padding: 10px 14px;
 	padding-top: max(10px, env(safe-area-inset-top, 0px));
 	padding-right: max(14px, env(safe-area-inset-right, 0px));
@@ -717,7 +735,9 @@
 }
 
 .finale-shell--board .finale-stage {
-	padding: clamp(96px, 14vh, 130px) clamp(118px, 14vw, 160px);
+	width: min(1200px, 100%);
+	min-height: calc(100dvh - 20px);
+	padding: clamp(40px, 6vh, 72px) clamp(48px, 6vw, 96px);
 }
 
 .finale-card {
@@ -813,18 +833,27 @@
 	pointer-events: none;
 }
 
+.finale-suspects--pile {
+	overflow: visible;
+}
+
 .finale-suspects li {
 	--x: 50;
 	--y: 50;
 	--r: 0deg;
+	--z: 1;
 	--delay: 0.1s;
 	position: absolute;
 	left: calc(var(--x) * 1%);
 	top: calc(var(--y) * 1%);
-	width: clamp(78px, 9vw, 108px);
+	z-index: var(--z);
+	width: clamp(70px, 7.4vw, 96px);
 	margin: 0;
 	transform: translate(-50%, -50%) rotate(var(--r));
-	filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
+}
+
+.finale-suspect--featured {
+	width: clamp(104px, 12vw, 148px);
 }
 
 .finale-photo-card {
@@ -842,9 +871,12 @@
 	border: 1px solid var(--color-accent-line);
 	box-shadow:
 		0 1px 0 rgba(255, 252, 245, 0.35) inset,
-		2px 3px 0 rgba(0, 0, 0, 0.18);
-	animation: finale-photo-in 0.65s ease-out both;
+		2px 3px 0 rgba(0, 0, 0, 0.18),
+		0 7px 14px rgba(0, 0, 0, 0.38);
+	animation: finale-photo-in 0.55s ease-out both;
 	animation-delay: var(--delay, 0.1s);
+	content-visibility: auto;
+	contain-intrinsic-size: 120px 150px;
 }
 
 @keyframes finale-photo-in {
@@ -927,10 +959,17 @@
 	z-index: 2;
 	display: block;
 	width: 100%;
-	aspect-ratio: 3 / 4;
+	height: auto;
+	/* Near-square: face crops stay natural; no stretch */
+	aspect-ratio: 5 / 6;
 	object-fit: cover;
-	object-position: center 30%;
+	object-position: center 40%;
 	border: 1px solid rgba(28, 25, 20, 0.18);
+}
+
+.finale-photo-card--kai img {
+	aspect-ratio: 3 / 4;
+	object-position: center 55%;
 }
 
 .finale-photo-card figcaption {
@@ -1028,50 +1067,51 @@
 		font-size: 0.72rem;
 	}
 
+	.finale-shell--board {
+		overflow: hidden;
+		padding: 8px 10px;
+		padding-top: max(8px, env(safe-area-inset-top, 0px));
+		padding-right: max(10px, env(safe-area-inset-right, 0px));
+		padding-bottom: max(8px, env(safe-area-inset-bottom, 0px));
+		padding-left: max(10px, env(safe-area-inset-left, 0px));
+	}
+
 	.finale-shell--board .finale-stage {
-		display: flex;
-		flex-direction: column;
-		align-items: stretch;
-		justify-content: flex-start;
-		min-height: unset;
+		display: grid;
+		place-items: center;
+		min-height: calc(100dvh - 16px);
 		width: 100%;
 		padding: 0;
-		gap: 8px;
 	}
 
 	.finale-shell--board .finale-card {
-		order: 2;
-		width: 100%;
-		max-width: none;
-		padding: clamp(18px, 4vw, 26px) clamp(14px, 3.5vw, 20px);
+		width: min(100%, 318px);
+		margin-inline: auto;
+		padding: clamp(14px, 3.6vw, 20px) clamp(12px, 3.2vw, 16px);
 		z-index: 2;
+		box-shadow:
+			0 0 0 1px rgba(255, 252, 245, 0.1),
+			0 18px 48px rgba(0, 0, 0, 0.55),
+			0 0 0 10px rgba(16, 12, 9, 0.16);
 	}
 
-	.finale-suspects--top,
-	.finale-suspects--bottom {
-		position: relative;
-		inset: auto;
-		height: 128px;
-		flex-shrink: 0;
-		overflow: hidden;
-	}
-
-	.finale-suspects--top {
-		order: 1;
-	}
-
-	.finale-suspects--bottom {
-		order: 3;
+	.finale-suspects--pile {
+		position: absolute;
+		inset: -1% -2%;
 	}
 
 	.finale-suspects li {
 		left: calc(var(--mx) * 1%);
 		top: calc(var(--my) * 1%);
-		width: clamp(52px, 15vw, 68px);
+		width: clamp(52px, 14vw, 68px);
+	}
+
+	.finale-suspect--featured {
+		width: clamp(86px, 26vw, 112px);
 	}
 
 	.finale-photo-card {
-		padding: 12px 5px 4px;
+		padding: 11px 5px 3px;
 	}
 
 	.finale-chincheta {
@@ -1081,19 +1121,31 @@
 	}
 
 	.finale-photo-card figcaption {
-		font-size: 0.48rem;
-		letter-spacing: 0.06em;
-		margin-top: 3px;
+		font-size: 0.46rem;
+		letter-spacing: 0.05em;
+		margin-top: 2px;
+	}
+
+	.finale-shell--board .finale-card h1 {
+		font-size: clamp(1.55rem, 7vw, 1.9rem);
+	}
+
+	.finale-shell--board .finale-question {
+		font-size: 1.02rem;
 	}
 }
 
 @media (min-width: 561px) and (max-width: 900px) {
 	.finale-shell--board .finale-stage {
-		padding: clamp(88px, 12vh, 120px) clamp(90px, 12vw, 130px);
+		padding: clamp(64px, 9vh, 100px) clamp(64px, 8vw, 110px);
 	}
 
 	.finale-suspects li {
-		width: clamp(70px, 11vw, 96px);
+		width: clamp(66px, 9.5vw, 88px);
+	}
+
+	.finale-suspect--featured {
+		width: clamp(96px, 14vw, 128px);
 	}
 }
 
@@ -1102,6 +1154,55 @@
 	height: 100dvh;
 	min-height: 100dvh;
 	padding: 0;
+}
+
+/* Caso cerrado: proofs stay on the desk under the sheet. */
+.finale-shell--proof-settled .proof-message::before {
+	background: rgba(16, 12, 9, 0.48);
+	animation: none;
+	opacity: 1;
+}
+
+.finale-shell--proof-settled .proof-message-card {
+	animation: none;
+}
+
+.finale-shell--letterbox::before,
+.finale-shell--letterbox::after {
+	content: '';
+	position: fixed;
+	left: 0;
+	right: 0;
+	z-index: 45;
+	height: 0;
+	background: #000;
+	pointer-events: none;
+	animation: cinema-letterbox 1.55s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+.finale-shell--letterbox::before {
+	top: 0;
+}
+
+.finale-shell--letterbox::after {
+	bottom: 0;
+}
+
+.finale-shell--letterbox .sound-dock {
+	z-index: 50;
+}
+
+.finale-shell--letterbox .proof-message-card {
+	z-index: 46;
+}
+
+@keyframes cinema-letterbox {
+	from {
+		height: 0;
+	}
+	to {
+		height: clamp(52px, 11vh, 100px);
+	}
 }
 
 .proof-rain {
@@ -1145,6 +1246,9 @@
 
 .finale-photo-card--proof {
 	animation: none;
+	/* Safari skips painting many overlapping transformed cards with content-visibility. */
+	content-visibility: visible;
+	contain-intrinsic-size: none;
 	padding: 16px 8px 6px;
 	box-shadow:
 		0 1px 0 rgba(255, 252, 245, 0.35) inset,
@@ -1158,6 +1262,13 @@
 	max-height: 168px;
 	object-fit: cover;
 	object-position: center;
+	/* Avoid top-to-bottom JPEG paint while bytes are still arriving. */
+	opacity: 0;
+	transition: opacity 0.18s ease;
+}
+
+.finale-photo-card--proof img.is-loaded {
+	opacity: 1;
 }
 
 @media (max-width: 560px) {
@@ -1184,12 +1295,13 @@
 	position: absolute;
 	inset: 0;
 	background: rgba(16, 12, 9, 0.42);
-	animation: backdrop-fade 0.4s ease both;
+	animation: backdrop-fade 1.1s ease both;
 }
 
 .proof-message-card {
 	width: min(520px, 100%);
 	pointer-events: auto;
+	animation: sheet-settle 1.05s ease-out 0.18s both;
 }
 
 .proof-message-card h1 {

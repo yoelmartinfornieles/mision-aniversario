@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { audio, usePuzzleAmbient } from '@/lib/audio';
 import {
 	DRAFT_CLOCK_FLUSH_MS,
 	ProgressService,
@@ -65,6 +66,7 @@ export const usePuzzle04 = () => {
 
 	const [draft] = useState(() => readMahjongDraft());
 	const [started, setStarted] = useState(() => draft?.started ?? false);
+	usePuzzleAmbient(started, PUZZLE_ID);
 	const [tiles, setTiles] = useState<MahjongTile[]>(
 		() => draft?.tiles ?? INITIAL_TILES
 	);
@@ -125,7 +127,7 @@ export const usePuzzle04 = () => {
 				);
 			} else if (result.kind === 'inconclusive') {
 				setStatus(
-					'El análisis ha alcanzado su límite. No puedo confirmar una pareja segura; esto no significa que el tablero no tenga solución.'
+					'El archivo no logra confirmar una pareja segura. No significa que no haya salida.'
 				);
 			} else {
 				setStatus('El tablero ya está despejado.');
@@ -196,7 +198,8 @@ export const usePuzzle04 = () => {
 
 	const finishIfCleared = (nextTiles: MahjongTile[]) => {
 		if (nextTiles.length > 0) return;
-		setStatus('La imagen desapareció… no: apareció. Arroa Behea.');
+		audio.play('solve');
+		setStatus('Las fichas caen y la foto habla.');
 		clearDraft(PUZZLE_ID);
 		completePuzzle(PUZZLE_ID);
 		setShowSaveCode(true);
@@ -206,6 +209,7 @@ export const usePuzzle04 = () => {
 		if (matchedPulse.length > 0 || rescueBusy) return;
 
 		if (!isFree(tile, tiles)) {
+			audio.play('error');
 			setStatus(
 				'Esa ficha está bloqueada. Solo bordes libres, sin nada encima.'
 			);
@@ -213,6 +217,7 @@ export const usePuzzle04 = () => {
 		}
 
 		if (selectedId === null) {
+			audio.play('select');
 			setSelectedId(tile.uid);
 			setStatus(
 				`Seleccionada: ${FACE_BY_ID[tile.faceId].label}. Busca su pareja libre.`
@@ -222,7 +227,7 @@ export const usePuzzle04 = () => {
 
 		if (selectedId === tile.uid) {
 			setSelectedId(null);
-			setStatus('Selección cancelada.');
+			setStatus('Selección descartada.');
 			return;
 		}
 
@@ -233,14 +238,16 @@ export const usePuzzle04 = () => {
 		}
 
 		if (!canMatch(selected, tile)) {
+			audio.play('error');
 			setRejectPulse([selected.uid, tile.uid]);
 			window.setTimeout(() => setRejectPulse([]), 380);
 			setSelectedId(tile.uid);
-			setStatus('No coinciden. Nueva selección.');
+			setStatus('No casan. Prueba otra.');
 			return;
 		}
 
 		if (!isFree(selected, tiles)) {
+			audio.play('error');
 			setSelectedId(null);
 			setStatus('La primera ficha ya no está libre.');
 			return;
@@ -252,7 +259,8 @@ export const usePuzzle04 = () => {
 		setHistory((previous) => [...previous, snapshot]);
 		setMatchedPulse([selected.uid, tile.uid]);
 		setSelectedId(null);
-		setStatus('Pareja retirada.');
+		audio.play('match');
+		setStatus('Pareja archivada.');
 
 		window.setTimeout(() => {
 			const next = snapshot.filter((entry) => !removeIds.has(entry.uid));

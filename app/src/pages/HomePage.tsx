@@ -1,4 +1,5 @@
 import { useState, type CSSProperties, type FormEvent } from 'react';
+import { SoundToggle, audio } from '@/lib/audio';
 import { goToFinale } from '@/lib/navigation';
 import { useProgress } from '@/lib/progress';
 import { PUZZLES } from '@/puzzles/catalog';
@@ -34,12 +35,14 @@ export const HomePage = ({ onNavigateToPuzzle }: HomePageProps) => {
 		event.preventDefault();
 		const restored = redeemContinueCode(codeInput);
 		if (!restored) {
+			audio.play('error');
 			setCodeError(true);
 			setCodeMessage('Clave desconocida. Revisa lo que anotaste.');
 			return;
 		}
 
 		const puzzle = PUZZLES.find((entry) => entry.id === restored);
+		audio.play('dossier');
 		setCodeError(false);
 		setCodeMessage(
 			`Expediente restaurado hasta «${puzzle?.label}». Puedes seguir.`
@@ -65,6 +68,9 @@ export const HomePage = ({ onNavigateToPuzzle }: HomePageProps) => {
 
 	return (
 		<div className="landing-shell">
+			<div className="sound-dock">
+				<SoundToggle />
+			</div>
 			<header className="landing-hero">
 				<p className="case-stamp">Archivo clasificado · Confidencial</p>
 				<h1 className="landing-brand">El caso del aniversario</h1>

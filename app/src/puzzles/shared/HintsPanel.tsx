@@ -1,4 +1,5 @@
 import { useEffect, useId, useState } from 'react';
+import { audio } from '@/lib/audio';
 import { useModalA11y } from './useModalA11y';
 
 const HINTS_STORAGE_PREFIX = 'disney-sorpresa-hints:';
@@ -51,6 +52,7 @@ export const HintsPanel = ({
 	if (!open) return null;
 
 	const showNext = () => {
+		audio.play('hint');
 		setRevealed((count) => {
 			const next = Math.min(count + 1, hints.length);
 			writeRevealed(persistKey, next);

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { SoundToggle } from '@/lib/audio';
 import { goHome } from '@/lib/navigation';
 
 type GameTopbarProps = {
@@ -38,6 +39,7 @@ export const GameTopbar = ({
 			<div className="case-name">{caseName}</div>
 		</div>
 		<div className="topbar-actions">
+			<SoundToggle />
 			<button
 				type="button"
 				className="tool-button secondary hint-button"

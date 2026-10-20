@@ -1,40 +1,60 @@
+const FINALE_SOLVED_KEY = 'disney-sorpresa-finale-solved';
 const FINALE_EMAILED_KEY = 'disney-sorpresa-finale-emailed';
 const TICKETS_FILENAME = 'entradas-disney-parques.jpg';
 
-const EMAIL_SUBJECT = 'Misión: Aniversario — caso cerrado';
+const EMAIL_SUBJECT = 'Sentencia · El caso del aniversario: cerrado';
 
 const ticketsImageUrl = (): string =>
 	`${import.meta.env.BASE_URL}finale/entradas-disney.jpg`;
 
 const buildEmailMessage = (airbnbUrl: string): string => {
 	const airbnbBlock = airbnbUrl
-		? `Noche en un Airbnb:\n${airbnbUrl}`
-		: 'Noche en un Airbnb.';
+		? `Base de operaciones: Airbnb cerca del parque.\n${airbnbUrl}`
+		: 'Base de operaciones: un Airbnb cerca del parque.';
 
 	return `Detective,
 
-El expediente está cerrado. Cinco dossiers. Cinco claves. Ninguna escapatoria.
+Expediente cerrado. Cinco dossiers. Cinco claves. Ninguna escapatoria.
 
-El complot del regalo ya no es secreto: Kai eligió. El resto… todos pringados.
-Hasta las cejas. Sin excepción.
+El complot del regalo ya no es secreto: Yoel eligió. El resto… todos metidos hasta las cejas. Sin excepción.
 
-La pieza que faltaba en el tablero: Disneyland Paris.
-Fechas del operativo: 7 y 8 de febrero.
+No vamos solos; los García se suman al viaje.
 
-El plan es frío y preciso. Salimos el día antes, el 6 de febrero, en coche.
-Dos etapas hasta París.
+El siguiente caso, el que faltaba en el tablero: Disneyland Paris.
+
+Operativo: del 6 al 9 de febrero.
+Salida el 6 en coche · dos etapas hasta París.
 Parada para comer; el motor también necesita pan.
 ${airbnbBlock}
-Primer día: Disneyland Studios.
-Con base en el apartamento, al amanecer: Disneyland Paris.
-Otra noche allí. El lunes día 9, la vuelta a casa.
+Sábado 7: Walt Disney Studios Park.
+Domingo 8: Disneyland Park.
+Lunes 9: vuelta a casa.
 
-Adjunto: la prueba del delito — las entradas a los parques.
-El resto de la info del operativo la tiene Yoel. Solo hay que pedirla.
+Sentencia: tres días, dos parques y ninguna coartada.
 
-Espero que la sentencia te guste.
+Te quiero, siempre te quise y siempre te querré.
 
 — Archivo clasificado · Confidencial`;
+};
+
+/** Case closed in this browser (answer solved) — independent of mail delivery. */
+export const hasFinaleBeenSolved = (): boolean => {
+	try {
+		return (
+			localStorage.getItem(FINALE_SOLVED_KEY) === '1' ||
+			localStorage.getItem(FINALE_EMAILED_KEY) === '1'
+		);
+	} catch {
+		return false;
+	}
+};
+
+export const markFinaleSolved = (): void => {
+	try {
+		localStorage.setItem(FINALE_SOLVED_KEY, '1');
+	} catch (error) {
+		console.error('Could not persist finale solved flag:', error);
+	}
 };
 
 export const hasFinaleBeenNotified = (): boolean => {
@@ -45,10 +65,9 @@ export const hasFinaleBeenNotified = (): boolean => {
 	}
 };
 
-const alreadyEmailed = hasFinaleBeenNotified;
-
 const markEmailed = (): void => {
 	try {
+		localStorage.setItem(FINALE_SOLVED_KEY, '1');
 		localStorage.setItem(FINALE_EMAILED_KEY, '1');
 	} catch (error) {
 		console.error('Could not persist finale email flag:', error);
@@ -94,7 +113,7 @@ const loadTicketsAttachment = async (): Promise<{
 };
 
 export const notifyFinaleComplete = async (): Promise<boolean> => {
-	if (alreadyEmailed()) return true;
+	if (hasFinaleBeenNotified()) return true;
 
 	const endpoint = import.meta.env.VITE_GAS_WEBAPP_URL?.trim();
 	const secret = import.meta.env.VITE_GAS_MAIL_SECRET?.trim();
@@ -112,8 +131,15 @@ export const notifyFinaleComplete = async (): Promise<boolean> => {
 			secret,
 			subject: EMAIL_SUBJECT,
 			message: buildEmailMessage(airbnbUrl),
+			variant: 'finale',
 			disneyLogo: true,
+			preheader:
+				'Expediente cerrado. La pieza que faltaba: Disneyland Paris.',
 		};
+		if (airbnbUrl) {
+			payload.ctaUrl = airbnbUrl;
+			payload.ctaLabel = 'Ver la base de operaciones';
+		}
 		if (attachment) {
 			payload.attachment = attachment;
 		}

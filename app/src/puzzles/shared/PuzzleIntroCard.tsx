@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { SoundToggle } from '@/lib/audio';
 import { goHome } from '@/lib/navigation';
 
 type PuzzleIntroCardProps = {
@@ -25,6 +26,9 @@ export const PuzzleIntroCard = ({
 	onStart,
 }: PuzzleIntroCardProps) => (
 	<div className="landing-shell">
+		<div className="sound-dock">
+			<SoundToggle />
+		</div>
 		<div className="landing-card">
 			<p className="label">{label}</p>
 			<h1>{title}</h1>
