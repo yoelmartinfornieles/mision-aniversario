@@ -1,0 +1,470 @@
+{
+  "boardRadius": 3,
+  "seed": 136,
+  "pieces": [
+    {
+      "id": "bano",
+      "label": "Baño",
+      "hint": "Con suelo de parqué!",
+      "color": "#6faba0",
+      "base": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "locked": false
+    },
+    {
+      "id": "salon",
+      "label": "Salón",
+      "hint": "El corazón de la casa",
+      "color": "#c4a574",
+      "base": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "locked": false
+    },
+    {
+      "id": "invitados",
+      "label": "Habitación de invitados",
+      "hint": "Sería la de Kai y no lo sabiamos!",
+      "color": "#9b8bb8",
+      "base": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "locked": false
+    },
+    {
+      "id": "dormitorio",
+      "label": "Dormitorio",
+      "hint": "Con un pedazo de armario!",
+      "color": "#7f9eb5",
+      "base": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "locked": false
+    },
+    {
+      "id": "cocina",
+      "label": "Cocina",
+      "hint": "Donde se improvisaban cenas",
+      "color": "#d4896a",
+      "base": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "locked": false
+    },
+    {
+      "id": "terraza",
+      "label": "Terraza",
+      "hint": "Sol de Mallorca",
+      "color": "#e0c56a",
+      "base": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "locked": true
+    },
+    {
+      "id": "entrada",
+      "label": "Habitación de la entrada",
+      "hint": "Futuro despacho",
+      "color": "#b0a89a",
+      "base": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "locked": true
+    },
+    {
+      "id": "lavadero",
+      "label": "Lavadero",
+      "hint": "Conseguiste ordenarlo todo",
+      "color": "#8fbc8f",
+      "base": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          3,
+          0
+        ]
+      ],
+      "locked": false
+    }
+  ],
+  "fixed": {
+    "entrada": {
+      "face": 0,
+      "rot": 0,
+      "cells": [
+        [
+          0,
+          -2
+        ],
+        [
+          0,
+          -1
+        ],
+        [
+          1,
+          -3
+        ],
+        [
+          1,
+          -1
+        ]
+      ]
+    },
+    "terraza": {
+      "face": 0,
+      "rot": 0,
+      "cells": [
+        [
+          -3,
+          1
+        ],
+        [
+          -3,
+          2
+        ],
+        [
+          -3,
+          3
+        ],
+        [
+          -2,
+          3
+        ]
+      ]
+    }
+  },
+  "solution": {
+    "bano": {
+      "face": 0,
+      "rot": 0,
+      "cells": [
+        [
+          -3,
+          0
+        ],
+        [
+          -2,
+          -1
+        ],
+        [
+          -2,
+          0
+        ],
+        [
+          -2,
+          1
+        ]
+      ]
+    },
+    "salon": {
+      "face": 0,
+      "rot": 0,
+      "cells": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          2,
+          -2
+        ],
+        [
+          2,
+          -1
+        ],
+        [
+          2,
+          0
+        ]
+      ]
+    },
+    "invitados": {
+      "face": 0,
+      "rot": 0,
+      "cells": [
+        [
+          -1,
+          -2
+        ],
+        [
+          -1,
+          -1
+        ],
+        [
+          -1,
+          0
+        ],
+        [
+          -1,
+          1
+        ],
+        [
+          0,
+          -3
+        ]
+      ]
+    },
+    "dormitorio": {
+      "face": 0,
+      "rot": 0,
+      "cells": [
+        [
+          1,
+          -2
+        ],
+        [
+          2,
+          -3
+        ],
+        [
+          3,
+          -3
+        ],
+        [
+          3,
+          -2
+        ],
+        [
+          3,
+          -1
+        ]
+      ]
+    },
+    "cocina": {
+      "face": 0,
+      "rot": 0,
+      "cells": [
+        [
+          -2,
+          2
+        ],
+        [
+          -1,
+          2
+        ],
+        [
+          -1,
+          3
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ]
+      ]
+    },
+    "terraza": {
+      "face": 0,
+      "rot": 0,
+      "cells": [
+        [
+          -3,
+          1
+        ],
+        [
+          -3,
+          2
+        ],
+        [
+          -3,
+          3
+        ],
+        [
+          -2,
+          3
+        ]
+      ]
+    },
+    "entrada": {
+      "face": 0,
+      "rot": 0,
+      "cells": [
+        [
+          0,
+          -2
+        ],
+        [
+          0,
+          -1
+        ],
+        [
+          1,
+          -3
+        ],
+        [
+          1,
+          -1
+        ]
+      ]
+    },
+    "lavadero": {
+      "face": 0,
+      "rot": 0,
+      "cells": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          3,
+          0
+        ]
+      ]
+    }
+  }
+}

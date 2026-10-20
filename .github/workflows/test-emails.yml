@@ -1,0 +1,30 @@
+# One-shot: envía invitación + finale de prueba a las 05:00 CEST del 19 oct 2026.
+# Solo debe llegar a fan_cassidy@hotmail.com — configura el destino del form Formspree
+# a esa dirección (sin BCC/notificaciones extra) antes del cron.
+#
+# Secrets: FORMSPREE_ENDPOINT, SITE_URL
+# Tras la prueba: borra o desactiva este workflow.
+
+name: Test emails (05:00 CEST)
+
+on:
+  schedule:
+    # 05:00 Europe/Madrid (CEST, UTC+2) · 19 octubre 2026 → 03:00 UTC
+    - cron: '0 3 19 10 *'
+  workflow_dispatch:
+
+jobs:
+  send-test-emails:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Send both test emails
+        env:
+          FORMSPREE_ENDPOINT: ${{ secrets.FORMSPREE_ENDPOINT }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+          TEST_EMAIL_TO: fan_cassidy@hotmail.com
+          # Solo si Formspree → únicamente fan_cassidy@hotmail.com (sin BCC)
+          I_SET_FORMSPREE_TO_TEST: '1'
+        run: node scripts/send-test-emails.mjs

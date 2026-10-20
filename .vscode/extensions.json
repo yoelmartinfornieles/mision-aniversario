@@ -1,0 +1,8 @@
+{
+	"recommendations": [
+		"esbenp.prettier-vscode",
+		"oxc.oxc-vscode",
+		"christian-kohler.path-intellisense",
+		"eamodio.gitlens"
+	]
+}

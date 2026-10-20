@@ -1,0 +1,391 @@
+.hex-shell {
+	--accent: #b45c3a;
+	background-image:
+		radial-gradient(ellipse 90% 70% at 50% 0%, rgba(255, 252, 245, 0.35), transparent 55%),
+		radial-gradient(ellipse 100% 80% at 50% 100%, rgba(28, 25, 20, 0.1), transparent 50%),
+		radial-gradient(rgba(44, 40, 32, 0.08) 0.7px, transparent 0.7px);
+	background-size: auto, auto, 9px 9px;
+}
+
+.hex-topbar {
+	max-width: 1400px;
+}
+
+.hex-layout {
+	max-width: 1400px;
+	margin: 0 auto;
+	display: grid;
+	grid-template-columns: minmax(260px, 340px) minmax(320px, 1fr);
+	gap: 14px;
+	align-items: stretch;
+}
+
+.hex-side,
+.hex-board-panel {
+	border-radius: 8px;
+}
+
+.hex-side {
+	gap: 10px;
+	max-height: calc(100vh - 130px);
+	overflow: auto;
+}
+
+.hex-side h2 {
+	margin: 0 0 2px;
+	font-family: var(--font-display);
+	font-size: 1.55rem;
+	color: var(--ink);
+}
+
+.hex-hint {
+	margin: 0;
+	font-size: 0.68rem;
+	color: #6a655c;
+}
+
+.hex-status {
+	min-height: 2.2em;
+	margin: 0;
+	font-size: 0.82rem;
+	line-height: 1.4;
+	color: #4a4a4a;
+}
+
+.hex-controls {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 8px;
+	margin-top: 2px;
+}
+
+.hex-controls .tool-button {
+	width: 100%;
+	min-height: 48px;
+	display: inline-flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	gap: 0.45rem;
+	text-transform: none;
+	font-size: 0.72rem;
+}
+
+.hex-controls .tool-button.action {
+	background: #e5d6c4;
+}
+
+.hex-controls .tool-button.small {
+	min-height: 48px;
+	flex-direction: row;
+	gap: 0.45rem;
+	white-space: nowrap;
+	text-transform: none;
+	font-size: 0.72rem;
+}
+
+.hex-tray {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.hex-tray-item {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+	padding: 10px 8px 8px;
+	overflow: hidden;
+	border: 1px solid #b8b6ac;
+	border-radius: 6px;
+	background: #ebe9e0;
+	color: inherit;
+	cursor: grab;
+	box-shadow: 0 2px 0 rgba(46, 41, 35, 0.18);
+	transition:
+		transform 160ms ease,
+		background 160ms ease,
+		outline 120ms ease;
+}
+
+.hex-tray-item:hover {
+	transform: translateY(-1px);
+	background: #f3efe6;
+}
+
+.hex-tray-item.selected {
+	outline: 3px solid var(--accent);
+	outline-offset: 1px;
+	background: #f3e7c4;
+}
+
+.hex-tray-item:active {
+	cursor: grabbing;
+}
+
+.hex-tray-header {
+	display: flex;
+	align-items: baseline;
+	justify-content: center;
+	gap: 6px;
+	width: 100%;
+}
+
+.hex-tray-letter {
+	display: inline-block;
+	min-width: 1.15em;
+	padding: 0 4px;
+	border-radius: 3px;
+	background: rgba(36, 39, 34, 0.08);
+	color: #3a3832;
+	font-family: var(--font-stamp);
+	font-size: 0.7rem;
+	font-weight: 400;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+}
+
+.hex-tray-label {
+	margin: 0;
+	font-family: var(--font-display);
+	font-size: 0.95rem;
+	font-weight: 700;
+	text-align: center;
+	line-height: 1.15;
+}
+
+.hex-tray-hint {
+	margin: 0;
+	font-size: 0.64rem;
+	line-height: 1.35;
+	text-align: center;
+	color: #3a3832;
+}
+
+.hex-tray-face {
+	font-family: var(--font-stamp);
+	font-size: 0.62rem;
+	font-weight: 400;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: #6a655c;
+}
+
+.hex-tray-empty {
+	padding: 12px;
+	border: 1.5px dashed rgba(46, 41, 35, 0.28);
+	border-radius: 6px;
+	background: rgba(255, 255, 255, 0.35);
+	font-size: 0.82rem;
+	color: #5c584e;
+	text-align: center;
+}
+
+.hex-help {
+	margin: 0;
+	padding-top: 8px;
+	border-top: 1.5px dashed rgba(46, 41, 35, 0.28);
+	font-size: 0.74rem;
+	line-height: 1.4;
+	color: #5c584e;
+}
+
+.hex-help kbd {
+	display: inline-block;
+	padding: 0.05em 0.4em;
+	border: 1.5px solid var(--line);
+	border-radius: 3px;
+	background: var(--paper);
+	box-shadow: 0 1px 0 var(--line);
+	font-size: 0.85em;
+	font-family: var(--font-stamp);
+	font-weight: 400;
+}
+
+.hex-board-panel {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 12px;
+	padding: clamp(12px, 2vw, 22px);
+	min-height: 520px;
+}
+
+.hex-board-frame {
+	width: min(100%, 560px);
+	padding: 10px;
+	border: 2px solid var(--line);
+	border-radius: 4px;
+	background:
+		linear-gradient(
+			145deg,
+			rgba(255, 252, 245, 0.5) 0%,
+			transparent 40%,
+			transparent 60%,
+			rgba(180, 160, 120, 0.1) 100%
+		),
+		#f0efe8;
+	background-size: 200% 200%, auto;
+	animation: board-sheen-drift 8s ease-in-out infinite;
+	box-shadow:
+		inset 0 0 0 1px rgba(255, 255, 255, 0.35),
+		0 3px 0 rgba(46, 41, 35, 0.18);
+}
+
+.hex-board {
+	display: block;
+	width: 100%;
+	height: auto;
+	touch-action: none;
+	cursor: crosshair;
+}
+
+.hex-piece {
+	display: block;
+	width: 100%;
+	max-width: 180px;
+	height: auto;
+	margin-inline: auto;
+	filter:
+		drop-shadow(0 1px 0 rgba(42, 45, 40, 0.28))
+		drop-shadow(0 3px 2px rgba(28, 25, 20, 0.14));
+}
+
+.hex-board-panel .hex-piece {
+	max-width: none;
+}
+
+.hex-cell {
+	transition: fill 120ms ease, filter 160ms ease;
+}
+
+.hex-cell.placed {
+	animation: hex-place-flash 0.4s ease-out;
+}
+
+@keyframes hex-place-flash {
+	0% {
+		filter: brightness(1.35) saturate(1.2);
+	}
+	100% {
+		filter: brightness(1) saturate(1);
+	}
+}
+
+.hex-piece.dimmed {
+	opacity: 0.45;
+}
+
+.hex-piece.interactive {
+	pointer-events: none;
+}
+
+.hex-board-rule {
+	width: min(100%, 560px);
+	margin: 0;
+	text-align: center;
+	font-size: 0.72rem;
+	font-weight: 700;
+	color: #5c584e;
+}
+
+.hex-submit {
+	min-width: 200px;
+	min-height: 48px;
+	text-transform: none;
+	font-size: 0.78rem;
+}
+
+.hex-submit.is-ready {
+	background: #dce8d4;
+	border-color: #476044;
+}
+
+@media (max-width: 900px) {
+	.hex-layout {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 10px;
+		max-width: 100%;
+		min-width: 0;
+	}
+
+	.hex-side {
+		max-height: none;
+		min-width: 0;
+	}
+
+	.hex-board-panel {
+		min-height: 0;
+		order: -1;
+		padding: 8px;
+		gap: 8px;
+	}
+
+	.hex-board-frame {
+		padding: 6px;
+	}
+
+	.hex-tray {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 8px;
+	}
+
+	.hex-tray-item {
+		min-width: 0;
+		padding: 8px 6px 6px;
+		gap: 2px;
+	}
+
+	.hex-piece {
+		max-width: 112px;
+	}
+
+	.hex-tray-label {
+		font-size: 0.82rem;
+	}
+
+	.hex-tray-hint {
+		font-size: 0.6rem;
+	}
+
+	.hex-controls {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.hex-controls .tool-button {
+		min-width: 0;
+		min-height: 44px;
+		padding: 0.45rem 0.4rem;
+		font-size: 0.68rem;
+	}
+
+	.hex-submit {
+		min-width: 0;
+		width: 100%;
+	}
+
+	.hex-shell .case-name {
+		display: none;
+	}
+
+	.hex-help kbd {
+		display: none;
+	}
+}
+
+@media (max-width: 360px) {
+	.hex-piece {
+		max-width: 96px;
+	}
+
+	.hex-tray-label {
+		font-size: 0.78rem;
+	}
+}

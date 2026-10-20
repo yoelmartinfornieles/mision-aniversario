@@ -1,0 +1,160 @@
+/**
+ * Shared chrome for hex (02) and mahjong (04) puzzles.
+ * Topbar markup lives in GameTopbar; murdoku-topbar styles live in murdoku.css.
+ * Puzzle-specific backgrounds, boards, and widgets stay in hexagon.css / mahjong.css.
+ */
+
+.hex-shell,
+.mahjong-shell {
+	--ink: var(--murdoku-ink);
+	--paper: var(--murdoku-paper);
+	--line: var(--murdoku-line);
+	min-height: 100vh;
+	min-height: 100dvh;
+	padding: 16px clamp(12px, 2vw, 28px) 28px;
+	padding-top: max(16px, env(safe-area-inset-top, 0px));
+	padding-right: max(clamp(12px, 2vw, 28px), env(safe-area-inset-right, 0px));
+	padding-bottom: max(28px, env(safe-area-inset-bottom, 0px));
+	padding-left: max(clamp(12px, 2vw, 28px), env(safe-area-inset-left, 0px));
+	color: var(--ink);
+	background-color: var(--murdoku-bg);
+	background-image:
+		radial-gradient(ellipse 90% 70% at 50% 0%, rgba(255, 252, 245, 0.35), transparent 55%),
+		radial-gradient(ellipse 100% 80% at 50% 100%, rgba(28, 25, 20, 0.1), transparent 50%);
+	font-family: var(--font-body);
+	overflow-x: clip;
+}
+
+.hex-topbar,
+.mahjong-topbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	min-height: 76px;
+	margin: 0 auto 14px;
+	padding: 8px 16px;
+	background:
+		linear-gradient(180deg, rgba(255, 252, 245, 0.45), transparent 50%),
+		var(--paper-fiber),
+		var(--paper);
+	background-size: auto, 140px 140px, auto;
+	border: 2px solid var(--line);
+	border-radius: 8px;
+	box-shadow: var(--shadow-panel);
+}
+
+.hex-shell .topbar-actions,
+.mahjong-shell .topbar-actions {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.hex-shell .hint-button,
+.mahjong-shell .hint-button {
+	min-height: 42px;
+	width: auto;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.35rem;
+	padding: 0.5rem 0.75rem;
+	white-space: nowrap;
+}
+
+.hex-side,
+.hex-board-panel,
+.mahjong-side,
+.mahjong-board-panel {
+	position: relative;
+	overflow: hidden;
+	isolation: isolate;
+	background:
+		linear-gradient(180deg, rgba(255, 252, 245, 0.35), transparent 40%),
+		var(--paper-fiber),
+		var(--paper);
+	background-size: auto, 140px 140px, auto;
+	border: 2px solid var(--line);
+	border-radius: 8px;
+	box-shadow: var(--shadow-panel);
+}
+
+.hex-board-panel::after,
+.mahjong-board-panel::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+	background:
+		linear-gradient(
+			125deg,
+			rgba(255, 252, 245, 0.35) 0%,
+			transparent 42%,
+			transparent 58%,
+			rgba(40, 36, 28, 0.04) 100%
+		),
+		radial-gradient(
+			ellipse 70% 50% at 20% 0%,
+			rgba(217, 199, 163, 0.18),
+			transparent 60%
+		);
+	background-size: 200% 200%, 100% 100%;
+	opacity: 0.7;
+	animation: board-sheen-drift 9s ease-in-out infinite;
+	mix-blend-mode: soft-light;
+}
+
+.hex-board-panel > *,
+.mahjong-board-panel > * {
+	position: relative;
+	z-index: 1;
+}
+
+.hex-side,
+.mahjong-side {
+	padding: 14px;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Compact chrome on phones — must live here because this file loads after murdoku.css */
+@media (max-width: 900px) {
+	.hex-shell,
+	.mahjong-shell {
+		padding: 10px 8px 20px;
+		padding-top: max(10px, env(safe-area-inset-top, 0px));
+		padding-right: max(8px, env(safe-area-inset-right, 0px));
+		padding-bottom: max(20px, env(safe-area-inset-bottom, 0px));
+		padding-left: max(8px, env(safe-area-inset-left, 0px));
+	}
+
+	.hex-topbar,
+	.mahjong-topbar {
+		gap: 6px;
+		min-height: 52px;
+		padding: 6px 8px;
+		max-width: 100%;
+		min-width: 0;
+	}
+
+	.hex-shell .topbar-actions,
+	.mahjong-shell .topbar-actions {
+		gap: 5px;
+	}
+
+	.hex-shell .hint-button,
+	.mahjong-shell .hint-button {
+		min-width: 44px;
+		min-height: 44px;
+		padding: 0.35rem 0.45rem;
+		font-size: 0.95rem;
+	}
+
+	.hex-side,
+	.mahjong-side {
+		padding: 10px;
+		overflow: auto;
+	}
+}

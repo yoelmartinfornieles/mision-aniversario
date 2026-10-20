@@ -1,0 +1,48 @@
+# Envía automáticamente la invitación al juego el 13 de noviembre.
+# Requiere secrets en el repo:
+#   FORMSPREE_ENDPOINT  — mismo endpoint Formspree que VITE_FORMSPREE_ENDPOINT
+#   SITE_URL            — URL pública de la app (p. ej. https://tu-dominio.com)
+#
+# Idempotencia: el cron es anual, pero el script solo envía si el año UTC es 2026.
+# Tras el envío real, desactiva este workflow (Actions → … → Disable workflow)
+# o borra el trigger `schedule` para que no vuelva a correr.
+#
+# Para probar ya: Actions → "Invite email (13 Nov)" → Run workflow
+# (en años ≠ 2026, añade FORCE_INVITE=1 como variable de entorno del job / secret).
+
+name: Invite email (13 Nov)
+
+on:
+  schedule:
+    # 09:00 UTC · 13 de noviembre (cada año; gate de año en el script → solo 2026)
+    - cron: '0 9 13 11 *'
+  workflow_dispatch:
+
+jobs:
+  send-invite:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Year gate (cron)
+        id: gate
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            year="$(date -u +%Y)"
+            if [ "$year" != "2026" ]; then
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              echo "Skipping auto-invite: UTC year is $year (only 2026). Disable this workflow."
+              exit 0
+            fi
+          fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+
+      - name: Send invite email
+        if: steps.gate.outputs.skip != 'true'
+        env:
+          FORMSPREE_ENDPOINT: ${{ secrets.FORMSPREE_ENDPOINT }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+          INVITE_TARGET_YEAR: '2026'
+          FORCE_INVITE: ${{ vars.FORCE_INVITE }}
+        run: node scripts/send-invite-email.mjs

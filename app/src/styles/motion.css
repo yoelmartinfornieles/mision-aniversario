@@ -1,0 +1,259 @@
+/* ── Shared motion: keyframes + feedback + a11y ───────────────────────── */
+
+@keyframes sheet-settle {
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes sheet-drop {
+	from {
+		opacity: 0;
+		transform: translateY(-18px) scale(0.96);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+@keyframes backdrop-fade {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes stamp-hit {
+	0% {
+		opacity: 0;
+		transform: scale(1.55) rotate(-8deg);
+		filter: blur(1px);
+	}
+	55% {
+		opacity: 1;
+		transform: scale(0.94) rotate(-1.5deg);
+		filter: blur(0);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1) rotate(-2deg);
+	}
+}
+
+@keyframes victory-stamp-land {
+	0% {
+		opacity: 0;
+		transform: translate(-50%, -60%) scale(1.8) rotate(-18deg);
+	}
+	60% {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(0.92) rotate(-8deg);
+	}
+	100% {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(1) rotate(-12deg);
+	}
+}
+
+@keyframes lamp-breathe {
+	0%,
+	100% {
+		opacity: 0.72;
+		transform: scale(1);
+	}
+	50% {
+		opacity: 1;
+		transform: scale(1.06);
+	}
+}
+
+@keyframes dust-drift {
+	0% {
+		transform: translate3d(0, 0, 0);
+		opacity: 0.35;
+	}
+	50% {
+		transform: translate3d(6px, -10px, 0);
+		opacity: 0.55;
+	}
+	100% {
+		transform: translate3d(-4px, -18px, 0);
+		opacity: 0.3;
+	}
+}
+
+@keyframes grain-shift {
+	0% {
+		background-position: 0 0;
+	}
+	100% {
+		background-position: 40px 28px;
+	}
+}
+
+@keyframes tick-breathe {
+	0%,
+	100% {
+		opacity: 0.62;
+	}
+	50% {
+		opacity: 1;
+	}
+}
+
+@keyframes sheen-sweep {
+	from {
+		transform: translateX(-130%) skewX(-12deg);
+	}
+	to {
+		transform: translateX(130%) skewX(-12deg);
+	}
+}
+
+@keyframes amber-flash {
+	0% {
+		box-shadow: inset 0 0 0 999px rgba(199, 159, 42, 0);
+		filter: brightness(1);
+	}
+	35% {
+		box-shadow: inset 0 0 0 999px rgba(199, 159, 42, 0.28);
+		filter: brightness(1.12);
+	}
+	100% {
+		box-shadow: inset 0 0 0 999px rgba(199, 159, 42, 0);
+		filter: brightness(1);
+	}
+}
+
+@keyframes ink-shake {
+	0%,
+	100% {
+		transform: translateX(0);
+	}
+	20% {
+		transform: translateX(-3px) rotate(-0.4deg);
+	}
+	40% {
+		transform: translateX(3px) rotate(0.4deg);
+	}
+	60% {
+		transform: translateX(-2px);
+	}
+	80% {
+		transform: translateX(2px);
+	}
+}
+
+@keyframes danger-flash {
+	0%,
+	100% {
+		filter: brightness(1);
+		box-shadow: none;
+	}
+	40% {
+		filter: brightness(1.05);
+		box-shadow: inset 0 0 0 999px rgba(155, 59, 50, 0.22);
+	}
+}
+
+@keyframes highlight-pulse {
+	0%,
+	100% {
+		box-shadow: inset 0 0 0 999px rgba(199, 159, 42, 0.18);
+	}
+	50% {
+		box-shadow: inset 0 0 0 999px rgba(199, 159, 42, 0.32);
+	}
+}
+
+@keyframes window-breathe {
+	0%,
+	100% {
+		box-shadow:
+			inset 0 0 0 1px rgba(255, 255, 255, 0.72),
+			0 0 4px rgba(169, 223, 243, 0.35);
+		filter: brightness(1);
+	}
+	50% {
+		box-shadow:
+			inset 0 0 0 1px rgba(255, 255, 255, 0.85),
+			0 0 10px rgba(169, 223, 243, 0.65);
+		filter: brightness(1.08);
+	}
+}
+
+@keyframes board-sheen-drift {
+	0%,
+	100% {
+		background-position: 0% 40%, 0 0, 0 0;
+	}
+	50% {
+		background-position: 100% 60%, 0 0, 0 0;
+	}
+}
+
+@keyframes place-pop {
+	0% {
+		transform: scale(0.7);
+		opacity: 0.4;
+		filter: brightness(1.25);
+	}
+	70% {
+		transform: scale(1.08);
+		filter: brightness(1.08);
+	}
+	100% {
+		transform: scale(1);
+		opacity: 1;
+		filter: brightness(1);
+	}
+}
+
+@keyframes match-glow {
+	0% {
+		filter: brightness(1);
+		box-shadow:
+			4px 5px 0 var(--line),
+			inset 0 0 0 3px color-mix(in srgb, var(--tile-tone) 34%, transparent),
+			0 0 0 0 rgba(199, 159, 42, 0);
+	}
+	40% {
+		filter: brightness(1.15);
+		box-shadow:
+			4px 5px 0 var(--line),
+			inset 0 0 0 3px rgba(199, 159, 42, 0.35),
+			0 0 16px 2px rgba(199, 159, 42, 0.45);
+	}
+	100% {
+		filter: brightness(1);
+		opacity: 0;
+		transform: scale(0.82) translateY(-6px);
+	}
+}
+
+/* Feedback utilities (opt-in via class) */
+.fx-amber-flash {
+	animation: amber-flash 0.45s ease-out;
+}
+
+.fx-ink-shake {
+	animation: ink-shake 0.38s ease-out, danger-flash 0.38s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+}

@@ -1,0 +1,123 @@
+html {
+	background: var(--color-desk);
+	color: var(--color-ink);
+	font-family: var(--font-body);
+	overflow-x: clip;
+}
+
+body {
+	position: relative;
+	margin: 0;
+	min-height: 100vh;
+	min-height: 100dvh;
+	overflow-x: clip;
+	background-color: var(--color-desk);
+	background-image:
+		radial-gradient(ellipse 120% 80% at 50% 40%, transparent 35%, rgba(0, 0, 0, 0.35) 100%),
+		radial-gradient(circle at 12% 88%, rgba(139, 58, 42, 0.14), transparent 28%),
+		radial-gradient(circle at 88% 20%, rgba(180, 160, 120, 0.1), transparent 32%),
+		repeating-linear-gradient(
+			0deg,
+			transparent,
+			transparent 2px,
+			rgba(0, 0, 0, 0.035) 2px,
+			rgba(0, 0, 0, 0.035) 3px
+		),
+		linear-gradient(165deg, #322a24 0%, #1a1714 48%, #0e0c0a 100%);
+	background-attachment: fixed;
+}
+
+/* Desk lamp wash — breathes slowly (transform/opacity only) */
+body::before {
+	content: '';
+	position: fixed;
+	inset: -8% -5% auto;
+	height: 68vh;
+	pointer-events: none;
+	z-index: 0;
+	background: radial-gradient(
+		ellipse 85% 65% at 50% 0%,
+		rgba(232, 214, 170, 0.28),
+		rgba(217, 199, 163, 0.1) 38%,
+		transparent 72%
+	);
+	transform-origin: 50% 0%;
+	animation: lamp-breathe 5.5s ease-in-out infinite;
+}
+
+/* Film grain + dust motes over the desk (behind UI) */
+body::after {
+	content: '';
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 0;
+	opacity: 0.4;
+	background-image:
+		radial-gradient(1.2px 1.2px at 12% 22%, rgba(243, 235, 222, 0.55), transparent),
+		radial-gradient(1px 1px at 28% 68%, rgba(217, 199, 163, 0.45), transparent),
+		radial-gradient(1.4px 1.4px at 47% 38%, rgba(243, 235, 222, 0.4), transparent),
+		radial-gradient(1px 1px at 63% 14%, rgba(217, 199, 163, 0.5), transparent),
+		radial-gradient(1.2px 1.2px at 78% 56%, rgba(243, 235, 222, 0.35), transparent),
+		radial-gradient(1px 1px at 88% 82%, rgba(217, 199, 163, 0.4), transparent),
+		radial-gradient(1.3px 1.3px at 35% 90%, rgba(243, 235, 222, 0.3), transparent),
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.15 0 0 0 0 0.12 0 0 0 0 0.08 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E");
+	background-size:
+		auto,
+		auto,
+		auto,
+		auto,
+		auto,
+		auto,
+		auto,
+		140px 140px;
+	background-repeat: repeat;
+	mix-blend-mode: soft-light;
+	animation:
+		dust-drift 14s ease-in-out infinite alternate,
+		grain-shift 28s linear infinite;
+}
+
+/* Narrow / battery-saver: keep lamp, drop grain + dust paint */
+@media (max-width: 720px), (prefers-reduced-data: reduce) {
+	body {
+		background-attachment: scroll;
+	}
+
+	body::before {
+		animation: none;
+		opacity: 0.9;
+	}
+
+	body::after {
+		display: none;
+	}
+}
+
+* {
+	box-sizing: border-box;
+}
+
+#root {
+	position: relative;
+	z-index: 1;
+	min-height: 100vh;
+	min-height: 100dvh;
+}
+
+input,
+button {
+	font: inherit;
+	-webkit-tap-highlight-color: rgba(139, 58, 42, 0.18);
+}
+
+input:focus,
+button:focus {
+	outline: 2px solid rgba(139, 58, 42, 0.55);
+	outline-offset: 2px;
+}
+
+::selection {
+	background: rgba(139, 58, 42, 0.22);
+	color: var(--color-ink);
+}
