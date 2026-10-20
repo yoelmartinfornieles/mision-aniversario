@@ -17,22 +17,24 @@ export const Puzzle02Screen = () => {
 			<PuzzleIntroCard
 				label="Archivo clasificado · 02 · IQ Hexagon"
 				title="La primera casa"
-				kicker="Mallorca · demolida y reconstruida"
+				kicker="Carrer de Mallorca · demolida y reconstruida"
 				alreadyDone={game.alreadyDone}
 				saveCode={game.saveCode}
 				startLabel="Abrir el plano"
 				replayLabel="Reconstruir de nuevo"
 				onStart={() => game.setStarted(true)}
 			>
-				Mallorca. Primera vez que vi aquella casa y el estómago se me
-				cerró: cocina como un agujero, baño de manicomio, paredes que
-				pedían clemencia. Tú miraste el mismo crimen… y decidiste
-				demolerlo. Tiraste media casa. Levantaste un hogar. Después
-				vinieron las risas, las noches, la pandemia, los cambios de
-				trabajo: pruebas en el expediente de dos personas que no sabían
-				rendirse. Del plano hexagonal solo quedan en pie la Habitación
-				de la entrada y la Terraza. Reconstruye las otras seis. El
-				archivo no admite otro encaje.
+				Carrer de Mallorca, junto al Asador El Bierzo. La primera vez
+				que vi aquella casa, el estómago se me encogió: la cocina era
+				un auténtico agujero, el baño parecía sacado de un manicomio,
+				esos techos falsos ahogaban cualquier ilusión. Tú viste el
+				mismo crimen… pero no te arrugaste y decidiste demolerlo.
+				Tiraste media casa. Levantaste un hogar. Después vinieron las
+				risas, las noches, los gritos de los vecinos, un nuevo Presi,
+				la pandemia, los cambios de trabajo: muescas en el cinturón de
+				dos personas que nunca supieron rendirse. Del plano hexagonal
+				solo quedan en pie la Habitación de la entrada y la Terraza.
+				Reconstruye las otras seis. El archivo no admite otro encaje.
 			</PuzzleIntroCard>
 		);
 	}

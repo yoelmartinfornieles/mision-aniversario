@@ -34,15 +34,15 @@ export const usePuzzle05 = () =>
 		initialStatus:
 			'¿Quién ha elegido el regalo de aniversario? Coloca al resto; Carla, al final.',
 		solvedStatus:
-			'Archivo: eligió Kai. A solas con Carla, en el Castillo.',
+			'Archivo: eligió Yoel. A solas con Carla, en el Castillo.',
 		getPreVictimError: getPreCarlaError,
 		isBoardSolved,
 		timer: 'countdown',
 		countdownSeconds: TIMER_SECONDS,
 		countdownExtensionSeconds: TIMER_EXTENSION_SECONDS,
-		selectPrompt: 'selecciona un implicado o el modo X',
+		selectPrompt: 'Selecciona un implicado o el modo X',
 		victimWaitPrompt:
-			'coloca al resto según sus pistas antes de situar a Carla',
+			'Coloca al resto según sus pistas antes de situar a Carla',
 		victimCorrectedPrompt:
-			'corregido — vuelve a colocar a Carla al final',
+			'Corregido — vuelve a colocar a Carla al final',
 	});

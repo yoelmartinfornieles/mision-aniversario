@@ -15,7 +15,7 @@ type CopyStatus = 'idle' | 'ok' | 'error';
 
 export const SaveCodeModal = ({
 	code,
-	title = '¡Misión completada!',
+	title = 'Dossier cerrado',
 	subtitle,
 	continueLabel = 'Volver al archivo',
 	onContinueAtHome,
@@ -44,17 +44,17 @@ export const SaveCodeModal = ({
 				aria-labelledby={titleId}
 			>
 				<span className="victory-stamp" aria-hidden="true">
-					Resuelto
+					Cerrado
 				</span>
-				<p className="label">Partida guardada</p>
+				<p className="label">Clave de guardado</p>
 				<h2 id={titleId}>{title}</h2>
 				{subtitle ? <p>{subtitle}</p> : null}
 				<p>
-					Como en los videojuegos antiguos: anota este código. Si recargas el
-					navegador o continúas más tarde, introdúcelo en el archivo principal y
-					recuperarás el progreso.
+					Tu progreso queda guardado en este navegador. Anota también esta
+					clave: te permitirá recuperarlo en otro dispositivo o si se borran
+					los datos.
 				</p>
-				<p className="continue-code" aria-label="Código de guardado">
+				<p className="continue-code" aria-label="Clave de guardado">
 					{code}
 				</p>
 				<button
@@ -64,16 +64,16 @@ export const SaveCodeModal = ({
 						void handleCopy();
 					}}
 				>
-					Copiar código
+					Copiar clave
 				</button>
 				{copyStatus === 'ok' && (
 					<p className="continue-feedback" role="status">
-						Código copiado.
+						Clave copiada.
 					</p>
 				)}
 				{copyStatus === 'error' && (
 					<p className="continue-feedback error" role="status">
-						No se pudo copiar. Anótalo a mano.
+						No se pudo copiar. Anótala a mano.
 					</p>
 				)}
 				<button

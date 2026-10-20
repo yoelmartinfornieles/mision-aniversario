@@ -3,11 +3,51 @@ import {
 	getRoomForPosition,
 	isBesideFurniture,
 	parseCellKey,
+	toCellKey,
 } from '@/puzzles/shared/murdoku';
-import { BOARD_COLUMNS, BOARD_ROWS, CARLA_ID, GEORGE_ID, KAI_ID } from './constants';
-import { furnitureCells, roomMatrix, suspects } from './data';
+import { BOARD_COLUMNS, BOARD_ROWS, CARLA_ID, GEORGE_ID, YOEL_ID } from './constants';
+import { furnitureCells, roomMatrix, suspects, windowCells } from './data';
 import { isBoardSolved } from './logic';
 import { SOLUTION } from './solution';
+import type { CellKey } from './types';
+
+const isRoomCorner = (cell: CellKey) => {
+	const room = getRoomForPosition(cell, roomMatrix);
+	let minRow = Infinity;
+	let maxRow = -1;
+	let minColumn = Infinity;
+	let maxColumn = -1;
+	roomMatrix.forEach((line, rowIndex) => {
+		line.forEach((name, columnIndex) => {
+			if (name !== room) return;
+			minRow = Math.min(minRow, rowIndex);
+			maxRow = Math.max(maxRow, rowIndex);
+			minColumn = Math.min(minColumn, columnIndex);
+			maxColumn = Math.max(maxColumn, columnIndex);
+		});
+	});
+	const { row, column } = parseCellKey(cell);
+	return (
+		(row === minRow || row === maxRow) &&
+		(column === minColumn || column === maxColumn)
+	);
+};
+
+const betweenFarolas = (cell: CellKey) => {
+	const { row, column } = parseCellKey(cell);
+	const room = getRoomForPosition(cell, roomMatrix);
+	const isFarola = (r: number, c: number) => {
+		const key = toCellKey(r, c);
+		return (
+			furnitureCells[key]?.kind === 'farola' &&
+			getRoomForPosition(key, roomMatrix) === room
+		);
+	};
+	return (
+		(isFarola(row, column - 1) && isFarola(row, column + 1)) ||
+		(isFarola(row - 1, column) && isFarola(row + 1, column))
+	);
+};
 
 const placementsFromSolution = () =>
 	Object.fromEntries(
@@ -37,7 +77,7 @@ describe('puzzle05 solution', () => {
 		expect(new Set(cols).size).toBe(8);
 	});
 
-	it('keeps Kai+Carla alone in Castillo and George alone in Selva', () => {
+	it('keeps Yoel+Carla alone in Castillo and George alone in Selva', () => {
 		const byRoom = new Map<string, number[]>();
 		for (const [id, cell] of Object.entries(SOLUTION)) {
 			const room = getRoomForPosition(cell, roomMatrix)!;
@@ -45,31 +85,34 @@ describe('puzzle05 solution', () => {
 			list.push(Number(id));
 			byRoom.set(room, list);
 		}
-		expect(byRoom.get('Castillo')?.sort()).toEqual([KAI_ID, CARLA_ID].sort());
+		expect(byRoom.get('Castillo')?.sort()).toEqual([YOEL_ID, CARLA_ID].sort());
 		expect(byRoom.get('Selva')).toEqual([GEORGE_ID]);
 	});
 
 	it('satisfies furniture adjacency from the clues', () => {
+		expect(furnitureCells[SOLUTION[1]]?.kind).toBe('carro de chuches');
 		expect(
-			isBesideFurniture(SOLUTION[1], 'farola', furnitureCells, roomMatrix)
+			isBesideFurniture(
+				SOLUTION[YOEL_ID],
+				'castillo',
+				furnitureCells,
+				roomMatrix
+			)
 		).toBe(true);
-		expect(
-			isBesideFurniture(SOLUTION[KAI_ID], 'seto', furnitureCells, roomMatrix)
-		).toBe(true);
-		expect(
-			isBesideFurniture(SOLUTION[3], 'cohete', furnitureCells, roomMatrix)
-		).toBe(true);
-		expect(
-			isBesideFurniture(SOLUTION[4], 'carro', furnitureCells, roomMatrix)
-		).toBe(true);
-		expect(furnitureCells[SOLUTION[5]]?.kind).toBe('banqueta');
+		expect(furnitureCells[SOLUTION[YOEL_ID]]?.kind).toBe('carro de chuches');
+		expect(isRoomCorner(SOLUTION[YOEL_ID])).toBe(false);
+		expect(windowCells[SOLUTION[3]]).toBeDefined();
+		expect(betweenFarolas(SOLUTION[3])).toBe(true);
+		expect(windowCells[SOLUTION[4]]).toBeDefined();
+		expect(furnitureCells[SOLUTION[5]]?.kind).toBe('carrusel');
+		expect(windowCells[SOLUTION[6]]).toBeDefined();
 		expect(
 			isBesideFurniture(SOLUTION[6], 'barco', furnitureCells, roomMatrix)
 		).toBe(true);
 		expect(
 			isBesideFurniture(
 				SOLUTION[GEORGE_ID],
-				'tronco',
+				'montaña rusa',
 				furnitureCells,
 				roomMatrix
 			)

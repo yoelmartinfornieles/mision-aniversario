@@ -1,10 +1,11 @@
-import { useState, type CSSProperties, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from 'react';
 import {
 	hasFinaleBeenNotified,
 	notifyFinaleComplete,
 } from '@/lib/finaleNotify';
 import { goHome } from '@/lib/navigation';
 import { useProgress } from '@/lib/progress';
+import { PROOF_DEAL_MS, PROOF_SPAWN_MS, ProofRain } from '@/pages/ProofRain';
 
 const FINALE_ANSWER = 'yoel';
 const finaleAsset = (file: string) =>
@@ -212,6 +213,18 @@ export const FinalePage = () => {
 	const [answer, setAnswer] = useState('');
 	const [error, setError] = useState<string | null>(null);
 	const [phase, setPhase] = useState<FinalePhase>(initialPhase);
+	const [revealMail, setRevealMail] = useState(false);
+	const [reducedMotion] = useState(
+		() => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+	);
+	const mounted = useRef(true);
+
+	useEffect(() => {
+		mounted.current = true;
+		return () => {
+			mounted.current = false;
+		};
+	}, []);
 
 	if (!lastDone) {
 		return (
@@ -241,30 +254,73 @@ export const FinalePage = () => {
 		}
 
 		setError(null);
+		setRevealMail(false);
 		setPhase('sending');
-		void notifyFinaleComplete().then((ok) => {
-			if (ok) {
-				setPhase('sent');
+		const started = performance.now();
+		const sleep = (ms: number) =>
+			new Promise((resolve) => setTimeout(resolve, ms));
+		void notifyFinaleComplete().then(async (ok) => {
+			if (!mounted.current) return;
+			if (!reducedMotion) {
+				const elapsed = performance.now() - started;
+				const untilReveal = Math.max(0, PROOF_DEAL_MS - elapsed);
+				const untilEnd = Math.max(0, PROOF_SPAWN_MS - elapsed);
+				if (ok && untilReveal > 0) await sleep(untilReveal);
+				if (!mounted.current) return;
+				if (ok) setRevealMail(true);
+				const rest = ok ? untilEnd - untilReveal : untilEnd;
+				if (rest > 0) await sleep(rest);
+				if (!mounted.current) return;
+			}
+			if (!ok) {
+				setRevealMail(false);
+				setPhase('ask');
+				setError(
+					'No se pudo enviar el aviso. Inténtalo de nuevo en un momento.'
+				);
 				return;
 			}
-			setPhase('ask');
-			setError(
-				'No se pudo enviar el aviso. Inténtalo de nuevo en un momento.'
-			);
+			setPhase('sent');
 		});
 	};
 
 	const headline =
-		phase === 'ask' || phase === 'sending'
-			? 'Última pregunta'
-			: 'Caso cerrado';
+		phase === 'sent'
+			? 'Revisa tu correo electrónico…'
+			: phase === 'ask' || phase === 'sending'
+				? 'Última pregunta'
+				: 'Caso cerrado';
 
 	const kicker =
 		phase === 'ask' || phase === 'sending'
 			? 'Una pregunta más antes de la sentencia.'
 			: 'El regalo va de camino a tu correo.';
 
-	const showSuspects = phase === 'ask' || phase === 'sending';
+	const flooding = !reducedMotion && (phase === 'sending' || phase === 'sent');
+	const showSuspects = phase === 'ask' || (phase === 'sending' && reducedMotion);
+
+	if (flooding) {
+		return (
+			<div className="landing-shell finale-shell finale-shell--rain">
+				<ProofRain spawning={phase === 'sending'} />
+				{(revealMail || phase === 'sent') && (
+					<div className="proof-message">
+						<div className="landing-card finale-card proof-message-card">
+							<p className="label">Caso cerrado</p>
+							<h1>Revisa tu correo electrónico…</h1>
+							<p className="landing-copy">
+								Cinco dossiers. Una última confesión. Adjunto en el correo: la
+								prueba del delito.
+							</p>
+							<button type="button" className="text-link" onClick={goHome}>
+								← Volver al archivo
+							</button>
+						</div>
+					</div>
+				)}
+			</div>
+		);
+	}
 
 	return (
 		<div

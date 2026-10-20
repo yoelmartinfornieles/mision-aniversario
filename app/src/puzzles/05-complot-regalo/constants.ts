@@ -5,9 +5,9 @@ export const BOARD_SIZE = 8;
 export const BOARD_ROWS = BOARD_SIZE;
 export const BOARD_COLUMNS = BOARD_SIZE;
 
-/** Carla — placed last; alone with whoever chose the anniversary gift (Kai). */
+/** Carla — placed last; alone with whoever chose the anniversary gift (Yoel). */
 export const CARLA_ID = 8;
-export const KAI_ID = 2;
+export const YOEL_ID = 1;
 export const GEORGE_ID = 7;
 
 /** Countdown tension: 22 minutes. */

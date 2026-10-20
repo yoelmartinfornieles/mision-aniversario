@@ -13,6 +13,7 @@ import {
 	canMatch,
 	countFreeMatches,
 	dealTiles,
+	findRescuePair,
 	getFreeTiles,
 	isFree,
 } from './logic';
@@ -81,6 +82,65 @@ export const usePuzzle04 = () => {
 	const [showHints, setShowHints] = useState(false);
 	const [matchedPulse, setMatchedPulse] = useState<string[]>([]);
 	const [rejectPulse, setRejectPulse] = useState<string[]>([]);
+	const [rescueIds, setRescueIds] = useState<string[]>([]);
+	const [rescueBusy, setRescueBusy] = useState(false);
+	const rescueRequest = useRef(0);
+
+	useEffect(
+		() => () => {
+			rescueRequest.current += 1;
+		},
+		[]
+	);
+
+	const clearRescue = () => {
+		rescueRequest.current += 1;
+		setRescueIds([]);
+		setRescueBusy(false);
+	};
+
+	const handleRescue = async () => {
+		if (rescueBusy || matchedPulse.length > 0 || tiles.length === 0) return;
+		const request = ++rescueRequest.current;
+		setRescueBusy(true);
+		setRescueIds([]);
+		setSelectedId(null);
+		setStatus('Analizando una ruta para despejar el tablero…');
+		try {
+			const result = await findRescuePair(
+				tiles,
+				() => rescueRequest.current !== request
+			);
+			if (rescueRequest.current !== request) return;
+			if (result.kind === 'pair') {
+				setRescueIds(result.tiles.map((tile) => tile.uid));
+				setStatus(
+					`Rescate: retira las dos fichas marcadas de ${FACE_BY_ID[result.tiles[0].faceId].label}. Esta pareja permite completar el tablero.`
+				);
+			} else if (result.kind === 'unsolvable') {
+				setStatus(
+					history.length > 0
+						? 'Esta posición ya no tiene solución. Pulsa Deshacer y vuelve a pedir ayuda; puede hacer falta retroceder varias parejas.'
+						: 'Esta posición ya no tiene solución y no queda historial para deshacer. Pulsa Reiniciar para recuperar el reparto con solución.'
+				);
+			} else if (result.kind === 'inconclusive') {
+				setStatus(
+					'El análisis ha alcanzado su límite. No puedo confirmar una pareja segura; esto no significa que el tablero no tenga solución.'
+				);
+			} else {
+				setStatus('El tablero ya está despejado.');
+			}
+		} catch (error) {
+			console.error('Mahjong rescue analysis failed', error);
+			if (rescueRequest.current === request) {
+				setStatus(
+					'No se ha podido analizar el tablero. Puedes seguir jugando o volver a pedir ayuda.'
+				);
+			}
+		} finally {
+			if (rescueRequest.current === request) setRescueBusy(false);
+		}
+	};
 
 	const alreadyDone = isPuzzleCompleted(PUZZLE_ID);
 	const saveCode = getContinueCode(PUZZLE_ID);
@@ -143,10 +203,12 @@ export const usePuzzle04 = () => {
 	};
 
 	const handleTileClick = (tile: MahjongTile) => {
-		if (matchedPulse.length > 0) return;
+		if (matchedPulse.length > 0 || rescueBusy) return;
 
 		if (!isFree(tile, tiles)) {
-			setStatus('Esa ficha está bloqueada. Solo bordes libres, sin nada encima.');
+			setStatus(
+				'Esa ficha está bloqueada. Solo bordes libres, sin nada encima.'
+			);
 			return;
 		}
 
@@ -185,11 +247,12 @@ export const usePuzzle04 = () => {
 		}
 
 		const removeIds = new Set([selected.uid, tile.uid]);
+		clearRescue();
 		const snapshot = tiles;
 		setHistory((previous) => [...previous, snapshot]);
 		setMatchedPulse([selected.uid, tile.uid]);
 		setSelectedId(null);
-		setStatus('Pareja encaja…');
+		setStatus('Pareja retirada.');
 
 		window.setTimeout(() => {
 			const next = snapshot.filter((entry) => !removeIds.has(entry.uid));
@@ -212,6 +275,8 @@ export const usePuzzle04 = () => {
 	};
 
 	const handleUndo = () => {
+		if (matchedPulse.length > 0) return;
+		clearRescue();
 		const previous = history[history.length - 1];
 		if (!previous) {
 			setStatus('No hay nada que deshacer.');
@@ -224,6 +289,8 @@ export const usePuzzle04 = () => {
 	};
 
 	const handleReset = () => {
+		if (matchedPulse.length > 0) return;
+		clearRescue();
 		clearDraft(PUZZLE_ID);
 		setTiles(INITIAL_TILES);
 		setHistory([]);
@@ -250,6 +317,9 @@ export const usePuzzle04 = () => {
 		clockSession,
 		matchedPulse,
 		rejectPulse,
+		rescueIds,
+		rescueBusy,
+		handleRescue,
 		showSaveCode,
 		setShowSaveCode,
 		showHints,

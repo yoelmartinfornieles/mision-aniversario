@@ -32,11 +32,11 @@ export const usePuzzle01 = () =>
 		initialStatus:
 			'Una por fila y columna. Lee las pistas; Carla al final, con quien hablaba.',
 		solvedStatus:
-			'¡Resuelto! Carla hablaba con Yoel, a solas junto al Almacén.',
+			'Archivo: Carla hablaba con Yoel, a solas en el Comedor.',
 		getPreVictimError,
 		isBoardSolved,
 		victimWaitPrompt:
-			'coloca al resto según sus pistas antes de situar a Carla',
+			'Coloca al resto según sus pistas antes de situar a Carla',
 		victimCorrectedPrompt:
-			'corregido — vuelve a colocar a Carla al final',
+			'Corregido — vuelve a colocar a Carla al final',
 	});

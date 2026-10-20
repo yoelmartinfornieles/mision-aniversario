@@ -18,7 +18,7 @@ export type BoardSuspect = {
 	portraitSrc?: string;
 };
 
-export type WindowEdge = 'bottom' | 'right';
+export type WindowEdge = 'top' | 'bottom' | 'left' | 'right';
 
 type MurdokuBoardProps = {
 	rows: number;

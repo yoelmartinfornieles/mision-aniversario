@@ -12,22 +12,21 @@ export const Puzzle05Screen = () => {
 			<PuzzleIntroCard
 				label="Archivo clasificado · 05 · Murdoku 8×8"
 				title="El complot del regalo"
-				kicker="¿Quién ha elegido el regalo de aniversario?"
+				kicker="Último dossier · demasiados sospechosos"
 				alreadyDone={game.alreadyDone}
 				saveCode={game.saveCode}
 				startLabel="Entrar al parque"
 				onStart={game.begin}
 			>
-				Cuatro pruebas cerradas… y el archivo escupe un último dossier. En
-				Arroa hay gente maja. Demasiado maja. Sospechosamente maja. Yoel,
-				Carla, Kai, Luar, Haizea, Saioa, Unai y hasta George: todos pringados
-				hasta las cejas en tu regalo. Alguien eligió. Alguien dejó caer la
-				espada de Damocles justo donde debía. El escenario es un parque de
-				atracciones —avenida, selva, castillo, cuentos, plaza, espacio,
-				muelle—. La banqueta de la plaza se puede ocupar. Reconstruye la
-				escena pieza a pieza: una persona por fila y columna; Carla al final,
-				a solas con quien eligió el regalo. El temporizador corre. La tensión
-				sube.
+				Cuatro dossiers cerrados. Pero sorpresa, el archivo escupe uno
+				más, escondido como una rata al fondo del cajón. Dice que Arroa
+				está lleno de gente maja. Parece que demasiado maja. Ocho
+				sospechosos: Yoel, Carla, Kai, Luar, Haizea, Saioa, Unai y
+				George. Todos pringados hasta las cejas en tu regalo. Uno de
+				ellos lo eligió. Los demás callaron como perros sarnosos. El
+				escenario: un parque de atracciones, con sus luces, sus farolas
+				y sus señuelos. Reconstruye la escena. Carla va la última, para
+				recibir el presente. El reloj corre. ¿Quién eligió el regalo?
 			</PuzzleIntroCard>
 		);
 	}
@@ -37,7 +36,7 @@ export const Puzzle05Screen = () => {
 			game={game}
 			brand="El complot del regalo"
 			caseName="¿Quién eligió el regalo? · 8×8"
-			boardRule="1 por fila y columna · banqueta se ocupa · el reloj no perdona"
+			boardRule="1 por fila y columna · carrusel y carro de chuches se ocupan · el reloj no perdona"
 			furnitureObjects={FURNITURE_OBJECT_NAMES}
 			gridClassName="board-grid board-grid--8"
 			shellClassName="murdoku-shell murdoku-shell--park"
@@ -45,8 +44,8 @@ export const Puzzle05Screen = () => {
 			suspectTitle="Implicados"
 			suspectHint="Clic para elegir · toca una palabra de la pista para resaltarla · Carla al final"
 			countdown
-			saveCodeTitle="¡Fue Kai!"
-			saveCodeSubtitle="Casi. Queda una última pregunta antes de dictar sentencia."
+			saveCodeTitle="Fue Yoel"
+			saveCodeSubtitle="Casi. Queda un último candado antes de acceder a la sentencia."
 			saveCodeContinueLabel="Última pregunta"
 			onSaveCodeContinue={goToFinale}
 		/>

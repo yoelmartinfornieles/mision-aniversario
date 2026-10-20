@@ -51,7 +51,16 @@ const escapeRegExp = (value: string) =>
 
 type Token =
 	| { kind: 'text'; value: string }
-	| { kind: 'mark'; value: string; highlight: ClueHighlight };
+	| {
+			kind: 'mark';
+			value: string;
+			highlight: ClueHighlight;
+			/** Punctuation glued after the mark so it cannot wrap alone. */
+			trailing?: string;
+	  };
+
+/** Closing punctuation that must stay with the preceding highlighted word. */
+const TRAILING_PUNCT_RE = /^([.,;:!?…»"'”’)\]}]+)/u;
 
 const buildPattern = (parts: string[]) => {
 	const unique = [...new Set(parts.filter(Boolean))].sort(
@@ -59,6 +68,34 @@ const buildPattern = (parts: string[]) => {
 	);
 	if (unique.length === 0) return null;
 	return new RegExp(`(${unique.map(escapeRegExp).join('|')})`, 'gi');
+};
+
+/** Attach ", ." etc. to the previous mark so they never orphan on a new line. */
+export const glueTrailingPunctuation = (tokens: Token[]): Token[] => {
+	const glued: Token[] = [];
+	for (let index = 0; index < tokens.length; index++) {
+		const token = tokens[index];
+		if (token.kind !== 'mark') {
+			glued.push(token);
+			continue;
+		}
+
+		const next = tokens[index + 1];
+		if (next?.kind === 'text') {
+			const match = next.value.match(TRAILING_PUNCT_RE);
+			if (match) {
+				const trailing = match[1];
+				const rest = next.value.slice(trailing.length);
+				glued.push({ ...token, trailing });
+				if (rest) glued.push({ kind: 'text', value: rest });
+				index += 1;
+				continue;
+			}
+		}
+
+		glued.push(token);
+	}
+	return glued;
 };
 
 export const tokenizeClue = (
@@ -117,7 +154,7 @@ export const tokenizeClue = (
 	if (lastIndex < clue.length) {
 		tokens.push({ kind: 'text', value: clue.slice(lastIndex) });
 	}
-	return tokens;
+	return glueTrailingPunctuation(tokens);
 };
 
 export const ClueText = ({
@@ -148,7 +185,9 @@ export const ClueText = ({
 					<button
 						key={index}
 						type="button"
-						className={`clue-keyword${isActive ? ' is-active' : ''}`}
+						className={`clue-keyword${isActive ? ' is-active' : ''}${
+							token.trailing ? ' has-punct' : ''
+						}`}
 						data-type={token.highlight.type}
 						onMouseEnter={() => onHighlight?.(token.highlight)}
 						onMouseLeave={() => onHighlight?.(null)}
@@ -159,7 +198,10 @@ export const ClueText = ({
 							onHighlight?.(isActive ? null : token.highlight);
 						}}
 					>
-						{token.value}
+						<span className="clue-keyword-label">{token.value}</span>
+						{token.trailing ? (
+							<span className="clue-punct">{token.trailing}</span>
+						) : null}
 					</button>
 				);
 			})}

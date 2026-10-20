@@ -1,6 +1,6 @@
 # El caso del aniversario
 
-Escape room web personal con estética de archivo clasificado. Cinco dossiers, avance por códigos de guardado y un cierre por email cuando el caso queda resuelto.
+Escape room web personal con estética de archivo clasificado. Cinco dossiers, avance por claves de guardado y un cierre por email cuando el caso queda resuelto.
 
 > **Archivo clasificado · Confidencial**  
 > *El expediente lleva nueve años abierto. Hoy toca cerrarlo.*
@@ -25,7 +25,7 @@ Una experiencia interactiva (React + TypeScript + Vite) pensada como regalo de a
 | 4 | Mudanza a Arroa | Mahjong / matching |
 | 5 | El complot del regalo | Revelación final (se desbloquea al completar los cuatro) |
 
-El progreso se guarda en el navegador. Tras cada dossier, el juego ofrece un **código de continuación** para retomar en otro dispositivo.
+El progreso se guarda automáticamente en el navegador. Tras cada dossier, el juego ofrece una **clave de guardado** para recuperar el avance en otro dispositivo o si se borran los datos.
 
 ## Estructura
 
@@ -120,4 +120,4 @@ En CI el `base` de Vite es `/mision-aniversario/`; en local sigue siendo `/`.
 
 ## Privacidad
 
-Repo pensado como proyecto personal / sorpresa. No publiques spoilers de códigos de guardado ni el contenido del email final si la destinataria aún no ha jugado... Por favor!
+Repo pensado como proyecto personal / sorpresa. No publiques spoilers de claves de guardado ni el contenido del email final si la destinataria aún no ha jugado... Por favor!

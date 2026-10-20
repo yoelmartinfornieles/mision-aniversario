@@ -14,7 +14,7 @@ export const suspects: Suspect[] = [
 		name: 'Emilio y Rafa',
 		shortName: 'E+R',
 		gender: 'pair',
-		clue: 'Estaban en el Bar, junto a la barra. Eran los únicos hombres de esa zona.',
+		clue: 'Estaban sobre una alfombra del Bar.',
 		portraitSrc: portrait('emilio-rafa'),
 	},
 	{
@@ -22,7 +22,7 @@ export const suspects: Suspect[] = [
 		name: 'Maria y Charly',
 		shortName: 'M+C',
 		gender: 'pair',
-		clue: 'Estaban en el Sótano Secreto, al este de Jose y Ramon. Estaban junto a una estantería.',
+		clue: 'Estaban en una ventana del Sótano Secreto.',
 		portraitSrc: portrait('maria-charly'),
 	},
 	{
@@ -30,7 +30,7 @@ export const suspects: Suspect[] = [
 		name: 'Inma y la Peque',
 		shortName: 'I+P',
 		gender: 'pair',
-		clue: 'Estaban en el Bar, al sur y al oeste de Emilio y Rafa.',
+		clue: 'Estaban en una ventana del Bar. No sobre una alfombra.',
 		portraitSrc: portrait('inma-peque'),
 	},
 	{
@@ -46,7 +46,7 @@ export const suspects: Suspect[] = [
 		name: 'Presi y el Capi',
 		shortName: 'P+C',
 		gender: 'pair',
-		clue: 'Estaban en el Sótano Secreto. Nadie de esa zona estaba más al este. No tocaban ninguna estantería.',
+		clue: 'Estaban en una esquina del Sótano Secreto. No tocaban ninguna estantería.',
 		portraitSrc: portrait('presi-capi'),
 	},
 	{
@@ -54,7 +54,7 @@ export const suspects: Suspect[] = [
 		name: 'Lourdes y David',
 		shortName: 'L+D',
 		gender: 'pair',
-		clue: 'Estaban en la Cocina, sentados en un taburete, junto a la fregadera.',
+		clue: 'Estaban sentados en un taburete. No estaban en el Bar.',
 		portraitSrc: portrait('lourdes-david'),
 	},
 	{
@@ -62,7 +62,7 @@ export const suspects: Suspect[] = [
 		name: 'Jose y Ramon',
 		shortName: 'J+R',
 		gender: 'pair',
-		clue: 'Estaban en el Sótano Secreto, entre dos estanterías. Nadie de esa zona estaba más al norte.',
+		clue: 'Estaban entre dos estanterías. No estaban en una esquina.',
 		portraitSrc: portrait('jose-ramon'),
 	},
 	{
@@ -70,20 +70,20 @@ export const suspects: Suspect[] = [
 		name: 'Raquel y Jesús',
 		shortName: 'R+J',
 		gender: 'pair',
-		clue: 'Estaban solos en el Almacén. Estaban al oeste de una silla.',
+		clue: 'Estaban sobre una alfombra del Almacén.',
 		portraitSrc: portrait('raquel-jesus'),
 	},
 	{
 		id: 9,
 		name: 'Yoel',
 		gender: 'male',
-		clue: 'Estaba en el Comedor, al sur de Carla. Estaba en una ventana.',
+		clue: 'Estaba en una ventana del Comedor.',
 		portraitSrc: portrait('yoel'),
 	},
 ];
 
 /**
- * 9×9 bar floor plan — rooms + furniture blockers placed around the solution.
+ * 9×9 bar floor plan — salas en bloques limpios:
  *
  *   Cocina · Sótano Secreto
  *   Bar    · Comedor · Almacén
@@ -108,34 +108,27 @@ export const roomMatrix: Room[][] = Array.from(
 );
 
 /**
- * Lourdes y David en 0-1 encima del taburete (ocupable).
- * Barra en C6–C9. Solución: 0-1*, 1-3, 2-7, 3-8, 4-2, 5-5, 6-4, 7-0, 8-6.
+ * Props ligeros. Señuelos: 2 taburetes, 2 huecos entre estanterías, 2 ventanas/sala.
+ * Solución: 0-7, 1-1*, 2-3, 3-8, 4-2*, 5-5*, 6-4, 7-0, 8-6.
+ * El hueco 1-4 cae en la fila de Lourdes; el taburete 0-1, en la de Maria.
  */
 export const furnitureCells: Partial<Record<CellKey, FurnitureCell>> = {
-	// —— Cocina ——
-	'0-0': { kind: 'estantería', role: 'blocking' },
+	// —— Cocina (Lourdes en 1-1; 0-1 es el otro taburete) ——
+	'0-0': { kind: 'fregadera', role: 'blocking' },
 	'0-1': { kind: 'taburete', role: 'occupiable' },
-	'0-2': { kind: 'fregadera', role: 'blocking' },
+	'0-2': { kind: 'nevera', role: 'blocking' },
+	'1-1': { kind: 'taburete', role: 'occupiable' },
 
-	// —— Sótano Secreto (hueco 1-3 entre estanterías para Jose) ——
-	'0-3': { kind: 'estantería', role: 'blocking' },
-	'0-4': { kind: 'estantería', role: 'blocking' },
-	'0-5': { kind: 'estantería', role: 'blocking' },
-	'0-6': { kind: 'estantería', role: 'blocking' },
-	'0-7': { kind: 'estantería', role: 'blocking' },
-	'0-8': { kind: 'estantería', role: 'blocking' },
-	'1-4': { kind: 'estantería', role: 'blocking' },
+	// —— Sótano Secreto (Jose en 2-3 entre estanterías; 1-4 es el otro hueco) ——
+	'1-3': { kind: 'estantería', role: 'blocking' },
 	'1-5': { kind: 'estantería', role: 'blocking' },
-	'1-6': { kind: 'estantería', role: 'blocking' },
-	'1-7': { kind: 'estantería', role: 'blocking' },
+	'3-3': { kind: 'estantería', role: 'blocking' },
+	// Cierra la esquina 0-8 para Presi (solo 3-8 queda libre de estantería)
 	'1-8': { kind: 'estantería', role: 'blocking' },
-	'2-3': { kind: 'estantería', role: 'blocking' },
-	'2-4': { kind: 'estantería', role: 'blocking' },
-	'2-5': { kind: 'estantería', role: 'blocking' },
-	'2-6': { kind: 'estantería', role: 'blocking' },
 
-	// —— Bar ——
-	'2-0': { kind: 'nevera', role: 'blocking' },
+	// —— Bar (Emilio en 4-2; 6-1 es otra alfombra) ——
+	'4-2': { kind: 'alfombra', role: 'occupiable' },
+	'6-1': { kind: 'alfombra', role: 'occupiable' },
 	'3-0': { kind: 'taburete', role: 'occupiable' },
 	'3-1': { kind: 'taburete', role: 'occupiable' },
 	'4-0': { kind: 'cañero', role: 'blocking' },
@@ -144,19 +137,18 @@ export const furnitureCells: Partial<Record<CellKey, FurnitureCell>> = {
 	'7-2': { kind: 'barra', role: 'blocking' },
 	'8-2': { kind: 'barra', role: 'blocking' },
 
-	// —— Almacén ——
+	// —— Almacén (Raquel en 5-5; 6-6 es otra alfombra) ——
+	'5-5': { kind: 'alfombra', role: 'occupiable' },
+	'6-6': { kind: 'alfombra', role: 'occupiable' },
 	'5-6': { kind: 'silla', role: 'occupiable' },
 	'5-7': { kind: 'silla', role: 'occupiable' },
 	'6-5': { kind: 'escalera', role: 'blocking' },
 	'6-7': { kind: 'estantería', role: 'blocking' },
 
 	// —— Comedor ——
-	'4-3': { kind: 'sofá', role: 'occupiable' },
 	'4-4': { kind: 'sofá', role: 'occupiable' },
 	'4-5': { kind: 'sofá', role: 'occupiable' },
 	'4-6': { kind: 'sofá', role: 'occupiable' },
-	'4-7': { kind: 'sofá', role: 'occupiable' },
-	'4-8': { kind: 'sofá', role: 'occupiable' },
 	'6-3': { kind: 'planta', role: 'blocking' },
 	'7-4': { kind: 'mesa', role: 'blocking' },
 	'7-8': { kind: 'mesa', role: 'blocking' },
@@ -172,21 +164,23 @@ export const FURNITURE_OBJECT_NAMES = [
 ];
 
 export const HINTS = [
-	'Lourdes y David están en la Cocina sobre el taburete junto a la fregadera: eso fija la esquina noroeste.',
-	'Jose y Ramon están en el Sótano entre estanterías, los más al norte de esa zona — solo 1-3 encaja.',
-	'Maria y Charly al este de Jose y Ramon, Presi y el Capi los más al este del sótano: cierran dos columnas más.',
-	'Emilio y Rafa están en el Bar junto a la barra; Inma y la Peque quedan al sur-oeste de ellos.',
-	'Carla al final, a solas con Yoel en el Comedor (Yoel en ventana, al sur de ella).',
+	'Una persona por fila y por columna. Empieza por Presi y el Capi: en el Sótano solo una esquina no toca estantería. Colócalos ahí.',
+	'Maria y Charly: ventana del Sótano. La que comparte fila con Presi y el Capi se descarta. Usa la otra.',
+	'Lourdes y David: taburete, y no en el Bar. El taburete de la fila de Maria y Charly queda fuera. Ponlos en el otro de la Cocina.',
+	'Jose y Ramon: entre dos estanterías, y no en una esquina. El hueco de la fila de Lourdes y David sobra. Usa el otro.',
+	'Inma y la Peque: ventana del Bar, sin pisar la columna de Lourdes y David. Emilio y Rafa: alfombra del Bar en una fila que siga libre; prueba la del medio.',
+	'Raquel y Jesús: alfombra del Almacén cuya columna no tape a Yoel. Yoel: ventana del Comedor en una columna libre. La de Jose y Ramon no vale.',
+	'Con el resto en su sitio solo queda una casilla. Carla, al final, en el Comedor, a solas con Yoel.',
 ];
 
-/** Window edges (decorative; cells stay walkable). */
+/** Una ventana de más por sala: la pista y la fila/columna descartan el señuelo. */
 export const windowCells: Partial<Record<CellKey, WindowEdge>> = {
-	'8-1': 'bottom', // B9 — Bar
-	'8-3': 'bottom', // D9 — Comedor
-	'8-5': 'bottom', // F9 — Comedor
-	'8-6': 'bottom', // G9 — Comedor
-	'5-8': 'right', // I6
-	'6-8': 'right', // I7
+	'0-7': 'top', // Maria y Charly — muro norte del Sótano
+	'3-4': 'bottom', // señuelo, muro sur (misma fila que Presi)
+	'7-0': 'left', // Inma y la Peque — Bar
+	'8-1': 'bottom', // señuelo del Bar
+	'8-6': 'bottom', // Yoel — Comedor
+	'8-3': 'bottom', // señuelo del Comedor
 };
 
 export const ROOM_ORDER: Room[] = [

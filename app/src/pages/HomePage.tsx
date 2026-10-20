@@ -22,7 +22,6 @@ export const HomePage = ({ onNavigateToPuzzle }: HomePageProps) => {
 	const [codeError, setCodeError] = useState(false);
 
 	const completedCount = progress.completedPuzzles.length;
-	/** El 5º dossier solo aparece tras completar los cuatro. */
 	const visiblePuzzles = PUZZLES.filter(
 		(puzzle) => puzzle.number < 5 || isPuzzleUnlocked(puzzle.id)
 	);
@@ -36,14 +35,14 @@ export const HomePage = ({ onNavigateToPuzzle }: HomePageProps) => {
 		const restored = redeemContinueCode(codeInput);
 		if (!restored) {
 			setCodeError(true);
-			setCodeMessage('Código desconocido. Revisa lo que anotaste.');
+			setCodeMessage('Clave desconocida. Revisa lo que anotaste.');
 			return;
 		}
 
 		const puzzle = PUZZLES.find((entry) => entry.id === restored);
 		setCodeError(false);
 		setCodeMessage(
-			`Progreso restaurado hasta «${puzzle?.label}». Ya puedes seguir.`
+			`Expediente restaurado hasta «${puzzle?.label}». Puedes seguir.`
 		);
 		setCodeInput('');
 	};
@@ -68,26 +67,30 @@ export const HomePage = ({ onNavigateToPuzzle }: HomePageProps) => {
 		<div className="landing-shell">
 			<header className="landing-hero">
 				<p className="case-stamp">Archivo clasificado · Confidencial</p>
-				<h1 className="landing-brand">Misión: Aniversario</h1>
+				<h1 className="landing-brand">El caso del aniversario</h1>
 				<p className="landing-kicker">
-					Una aventura acaba… pero otra empieza.
+					El expediente lleva nueve años abierto. Hoy toca cerrarlo.
 				</p>
 				<div className="landing-lede">
 					<p>
-						La ciudad duerme. Yo no. Nueve años de pistas, miles de
-						recuerdos archivados… y ahora el caso se amplía: viajamos
-						los tres.
+						La ciudad duerme bajo una lluvia que no limpia nada. Yo
+						no duermo. Sobre el escritorio: fotos clavadas con
+						chinchetas, confesiones a medias, un bar que sigue
+						oliendo a humo y perdición. Nueve años de pistas. Y una
+						fecha tachada en rojo: 13 de noviembre.
 					</p>
 					<p>
-						Fecha del expediente: 13 de noviembre. Si quieres cerrar
-						este caso, tendrás que bajar a la sala de pruebas: a tus
-						propios recuerdos.
+						Si quieres cerrar el caso, detective, tendrás que bajar
+						a la sala de pruebas. No hay laboratorio. Solo tus
+						recuerdos… y lo que prefieres no recordar.
 					</p>
 					<p>
-						Cuatro escenas. Cuatro momentos que lo cambiaron todo.
-						Resuélvelas, responde la última pregunta… y el regalo
-						llegará a tu correo. Falla… y la entrega se cancela. Sin
-						apelación.
+						Cuatro dossiers sellados. Cuatro noches que lo
+						cambiaron todo. Resuélvelos uno a uno y el regalo llega
+						a tu correo.
+					</p>
+					<p>
+						Falla… y la entrega se cancela. Sin apelación.
 					</p>
 				</div>
 				<p className="landing-tick">El reloj no espera, detective…</p>
@@ -108,7 +111,7 @@ export const HomePage = ({ onNavigateToPuzzle }: HomePageProps) => {
 
 				{fifthUnlocked && !fifthDone && (
 					<p className="dossier-alert">
-						Ha aparecido un último dossier sellado…
+						Un último dossier ha aparecido sobre el escritorio. Sellado.
 					</p>
 				)}
 
@@ -189,11 +192,12 @@ export const HomePage = ({ onNavigateToPuzzle }: HomePageProps) => {
 				</ul>
 			</section>
 
-			<section className="continue-panel" aria-label="Continuar con código">
-				<h2>¿Tienes un código de guardado?</h2>
+			<section className="continue-panel" aria-label="Continuar con clave de guardado">
+				<h2>¿Perdiste el rastro?</h2>
 				<p>
-					Si cambiaste de dispositivo o borraste la memoria, introduce
-					aquí el último código que anotaste.
+					Si cambiaste de dispositivo o el navegador olvidó lo que
+					sabías, dame la última clave de guardado que anotaste. Yo
+					me encargo de recuperar el expediente.
 				</p>
 				<form className="continue-form" onSubmit={handleRedeem}>
 					<input
@@ -203,10 +207,10 @@ export const HomePage = ({ onNavigateToPuzzle }: HomePageProps) => {
 							setCodeInput(event.target.value.toUpperCase());
 							setCodeMessage(null);
 						}}
-						placeholder="Ej. ELBARDELBASKO"
+						placeholder="Ej. NARKISBALENTZIAGA"
 						autoComplete="off"
 						spellCheck={false}
-						aria-label="Código de guardado"
+						aria-label="Clave de guardado"
 					/>
 					<button type="submit" className="tool-button secondary">
 						Restaurar
@@ -229,18 +233,26 @@ export const HomePage = ({ onNavigateToPuzzle }: HomePageProps) => {
 					onClick={() => {
 						if (
 							window.confirm(
-								'¿Borrar el progreso local? Necesitarás un código para recuperarlo.'
+								'¿Quemar el expediente local? Sin tu clave de guardado, no habrá vuelta atrás.'
 							)
 						) {
 							resetProgress();
-							setCodeMessage('Progreso local borrado.');
+							setCodeMessage('Expediente local destruido.');
 							setCodeError(false);
 						}
 					}}
 				>
-					Borrar progreso local
+					Quemar expediente local
 				</button>
 			)}
+
+			<footer className="landing-credit">
+				<p>
+					© {new Date().getFullYear()} · Propiedad de Carla Giustozzi
+					Martínez
+				</p>
+				<p>Caso programado por Yoel Martín Fornieles</p>
+			</footer>
 		</div>
 	);
 };

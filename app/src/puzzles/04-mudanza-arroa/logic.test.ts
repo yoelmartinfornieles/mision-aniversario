@@ -5,6 +5,7 @@ import {
 	canMatch,
 	countFreeMatches,
 	dealTiles,
+	findRescuePair,
 	getFreeTiles,
 	isFree,
 } from './logic';
@@ -40,6 +41,45 @@ describe('dealTiles', () => {
 		for (const face of TILE_FACES) {
 			expect(faceCounts.get(face.id)).toBe(COPIES_PER_FACE);
 		}
+	});
+
+	describe('findRescuePair', () => {
+		it('guides the fixed deal all the way to an empty board', async () => {
+			let remaining = dealTiles(DEAL_SEED);
+			for (let move = 0; move < 32; move += 1) {
+				const result = await findRescuePair(remaining);
+				expect(result.kind).toBe('pair');
+				if (result.kind !== 'pair') throw new Error('Expected a safe pair');
+				const [a, b] = result.tiles;
+				expect(canMatch(a, b)).toBe(true);
+				expect(isFree(a, remaining)).toBe(true);
+				expect(isFree(b, remaining)).toBe(true);
+				remaining = remaining.filter(
+					(tile) => tile.uid !== a.uid && tile.uid !== b.uid
+				);
+			}
+			expect(remaining).toHaveLength(0);
+			expect(await findRescuePair(remaining)).toEqual({ kind: 'complete' });
+		});
+
+		it('rejects a dead end even when a legal pair is available', async () => {
+			const tiles: MahjongTile[] = [
+				{ uid: 'a', faceId: 'home', x: 0, y: 0, z: 0 },
+				{ uid: 'b', faceId: 'keys', x: 0, y: 0, z: 1 },
+				{ uid: 'c', faceId: 'keys', x: 2, y: 0, z: 0 },
+				{ uid: 'd', faceId: 'home', x: 2, y: 0, z: 1 },
+				{ uid: 'e', faceId: 'heart', x: 4, y: 0, z: 0 },
+				{ uid: 'f', faceId: 'heart', x: 6, y: 0, z: 0 },
+			];
+			expect(countFreeMatches(tiles)).toBe(1);
+			expect(await findRescuePair(tiles)).toEqual({ kind: 'unsolvable' });
+		});
+
+		it('does not report a cancelled search as an unsolvable board', async () => {
+			expect(await findRescuePair(dealTiles(DEAL_SEED), () => true)).toEqual({
+				kind: 'inconclusive',
+			});
+		});
 	});
 
 	it('produces a solvable deal for the fixed DEAL_SEED', () => {

@@ -1,10 +1,11 @@
 import type { ClueHighlight } from './clueText';
-import type { FurnitureCell } from './MurdokuBoard';
+import type { FurnitureCell, WindowEdge } from './MurdokuBoard';
 
 type HighlightArgs = {
 	highlight: ClueHighlight | null;
 	roomMatrix: string[][];
 	furnitureCells: Partial<Record<string, FurnitureCell>>;
+	windowCells?: Partial<Record<string, WindowEdge>>;
 	placements: Partial<Record<string, number>>;
 	suspects: Array<{ id: number; name: string }>;
 };
@@ -13,11 +14,20 @@ export const keysForHighlight = ({
 	highlight,
 	roomMatrix,
 	furnitureCells,
+	windowCells = {},
 	placements,
 	suspects,
 }: HighlightArgs): Set<string> => {
 	const keys = new Set<string>();
 	if (!highlight) return keys;
+
+	if (
+		highlight.value.toLowerCase() === 'ventana' &&
+		(highlight.type === 'keyword' || highlight.type === 'object')
+	) {
+		for (const key of Object.keys(windowCells)) keys.add(key);
+		return keys;
+	}
 
 	const rows = roomMatrix.length;
 	const cols = roomMatrix[0]?.length ?? 0;

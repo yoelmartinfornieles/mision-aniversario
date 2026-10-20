@@ -10,47 +10,57 @@ const svgProps = {
 	'aria-hidden': true as const,
 };
 
-const Monte = () => (
+/** Cajas apiladas — la mudanza. */
+const Cajas = () => (
 	<svg {...svgProps}>
 		<path
-			d="M8 48 L24 22 L32 34 L40 18 L56 48 Z"
-			fill="#7a9a78"
+			d="M14 28 H50 V50 H14 Z"
+			fill="#d4b896"
 			stroke={INK}
 			strokeWidth="2.5"
 			strokeLinejoin="round"
 		/>
 		<path
-			d="M24 22 L28 28 L32 34"
-			fill="none"
-			stroke="#f2ebe2"
-			strokeWidth="2"
-			strokeLinecap="round"
+			d="M18 20 H46 V28 H18 Z"
+			fill="#c4a882"
+			stroke={INK}
+			strokeWidth="2.5"
+			strokeLinejoin="round"
+		/>
+		<line x1="32" y1="20" x2="32" y2="50" stroke={INK} strokeWidth="2" />
+		<path
+			d="M28 20 H36 V24 H28 Z"
+			fill="#e2c4b7"
+			stroke={INK}
+			strokeWidth="1.8"
 		/>
 	</svg>
 );
 
-const Mar = () => (
+/** Llaves del nuevo hogar. */
+const Llaves = () => (
 	<svg {...svgProps}>
-		<rect x="8" y="14" width="48" height="36" rx="4" fill="#9ec4d8" stroke={INK} strokeWidth="2.5" />
+		<circle cx="22" cy="24" r="10" fill="#e8d090" stroke={INK} strokeWidth="2.5" />
+		<circle cx="22" cy="24" r="4" fill="#f2ebe2" stroke={INK} strokeWidth="2" />
 		<path
-			d="M12 28 Q20 22 28 28 T44 28 T56 28"
+			d="M30 28 L48 46 M42 40 L48 40 L48 46"
 			fill="none"
 			stroke={INK}
-			strokeWidth="2.2"
+			strokeWidth="2.8"
 			strokeLinecap="round"
+			strokeLinejoin="round"
 		/>
 		<path
-			d="M12 38 Q20 32 28 38 T44 38 T56 38"
-			fill="none"
-			stroke="#42566a"
-			strokeWidth="2.2"
+			d="M36 34 L40 38"
+			stroke="#c4ad82"
+			strokeWidth="2.4"
 			strokeLinecap="round"
-			opacity="0.7"
 		/>
 	</svg>
 );
 
-const Hogar = () => (
+/** Etxe — casa / hogar en euskera. */
+const Etxe = () => (
 	<svg {...svgProps}>
 		<path
 			d="M10 30 L32 12 L54 30 V52 H10 Z"
@@ -62,10 +72,12 @@ const Hogar = () => (
 		<path d="M10 30 L32 12 L54 30" fill="none" stroke={INK} strokeWidth="2.5" />
 		<rect x="26" y="36" width="12" height="16" fill="#f2ebe2" stroke={INK} strokeWidth="2" />
 		<rect x="16" y="34" width="8" height="8" fill="#a9dff3" stroke={INK} strokeWidth="1.8" />
+		<rect x="40" y="34" width="8" height="8" fill="#a9dff3" stroke={INK} strokeWidth="1.8" />
 	</svg>
 );
 
-const Camino = () => (
+/** Ruta — el camino hasta Arroa. */
+const Ruta = () => (
 	<svg {...svgProps}>
 		<path
 			d="M18 52 C22 40, 20 28, 28 18 C34 28, 40 36, 46 12"
@@ -86,166 +98,98 @@ const Camino = () => (
 	</svg>
 );
 
-const Lluvia = () => (
+/** Mesa compartida — vida cotidiana. */
+const Mesa = () => (
 	<svg {...svgProps}>
 		<path
-			d="M16 24 C16 14, 48 14, 48 24 C54 24, 54 34, 46 34 H18 C10 34, 10 24, 16 24 Z"
-			fill="#c5d8e4"
-			stroke={INK}
-			strokeWidth="2.5"
-		/>
-		{[20, 28, 36, 44].map((x) => (
-			<line
-				key={x}
-				x1={x}
-				y1="40"
-				x2={x - 2}
-				y2="54"
-				stroke="#42566a"
-				strokeWidth="2.4"
-				strokeLinecap="round"
-			/>
-		))}
-	</svg>
-);
-
-const Sol = () => (
-	<svg {...svgProps}>
-		<circle cx="32" cy="32" r="12" fill="#f0d878" stroke={INK} strokeWidth="2.5" />
-		{[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => {
-			const rad = (deg * Math.PI) / 180;
-			const x1 = 32 + Math.cos(rad) * 16;
-			const y1 = 32 + Math.sin(rad) * 16;
-			const x2 = 32 + Math.cos(rad) * 24;
-			const y2 = 32 + Math.sin(rad) * 24;
-			return (
-				<line
-					key={deg}
-					x1={x1}
-					y1={y1}
-					x2={x2}
-					y2={y2}
-					stroke={INK}
-					strokeWidth="2.4"
-					strokeLinecap="round"
-				/>
-			);
-		})}
-	</svg>
-);
-
-const Coche = () => (
-	<svg {...svgProps}>
-		<path
-			d="M12 36 L16 26 H28 L34 20 H48 L54 28 V40 H12 Z"
-			fill="#cfc6b6"
+			d="M12 28 H52 V36 H12 Z"
+			fill="#c4a882"
 			stroke={INK}
 			strokeWidth="2.5"
 			strokeLinejoin="round"
 		/>
-		<path d="M28 26 L34 20 H46 L50 26 Z" fill="#a9dff3" stroke={INK} strokeWidth="2" />
-		<circle cx="22" cy="40" r="5" fill="#2e2923" stroke={INK} strokeWidth="2" />
-		<circle cx="46" cy="40" r="5" fill="#2e2923" stroke={INK} strokeWidth="2" />
-		<circle cx="22" cy="40" r="2" fill="#f3ebde" />
-		<circle cx="46" cy="40" r="2" fill="#f3ebde" />
+		<line x1="18" y1="36" x2="16" y2="50" stroke={INK} strokeWidth="2.5" strokeLinecap="round" />
+		<line x1="46" y1="36" x2="48" y2="50" stroke={INK} strokeWidth="2.5" strokeLinecap="round" />
+		<ellipse cx="32" cy="24" rx="8" ry="4" fill="#e2c4b7" stroke={INK} strokeWidth="2" />
+		<circle cx="24" cy="30" r="2.5" fill="#f2ebe2" stroke={INK} strokeWidth="1.5" />
+		<circle cx="40" cy="30" r="2.5" fill="#f2ebe2" stroke={INK} strokeWidth="1.5" />
 	</svg>
 );
 
-const Rio = () => (
+/** Café — mañanas juntos. */
+const Cafe = () => (
 	<svg {...svgProps}>
 		<path
-			d="M10 18 C22 28, 18 40, 32 46 C44 40, 42 28, 54 18"
-			fill="#7eb8c8"
+			d="M18 22 H42 V44 C42 50, 22 50, 22 44 V22 Z"
+			fill="#f2ebe2"
 			stroke={INK}
 			strokeWidth="2.5"
 			strokeLinejoin="round"
 		/>
 		<path
-			d="M16 28 C24 34, 28 38, 32 40 C38 36, 42 32, 48 26"
+			d="M42 28 H50 C54 28, 54 40, 50 40 H42"
 			fill="none"
-			stroke="#f2ebe2"
+			stroke={INK}
+			strokeWidth="2.5"
+			strokeLinecap="round"
+		/>
+		<path
+			d="M24 16 C26 12, 28 12, 30 16 M32 16 C34 12, 36 12, 38 16"
+			fill="none"
+			stroke="#8a6a2e"
 			strokeWidth="2"
 			strokeLinecap="round"
-			opacity="0.7"
 		/>
+		<path d="M22 30 H38" stroke="#6a4a28" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
 	</svg>
 );
 
-const Puente = () => (
-	<svg {...svgProps}>
-		<path d="M8 40 H56" stroke="#8eb8c8" strokeWidth="6" strokeLinecap="round" />
-		<path
-			d="M12 40 C20 22, 44 22, 52 40"
-			fill="none"
-			stroke="#c4ad82"
-			strokeWidth="5"
-			strokeLinecap="round"
-		/>
-		<path
-			d="M12 40 C20 22, 44 22, 52 40"
-			fill="none"
-			stroke={INK}
-			strokeWidth="2.5"
-			strokeLinecap="round"
-		/>
-		<line x1="20" y1="34" x2="20" y2="40" stroke={INK} strokeWidth="2" />
-		<line x1="32" y1="28" x2="32" y2="40" stroke={INK} strokeWidth="2" />
-		<line x1="44" y1="34" x2="44" y2="40" stroke={INK} strokeWidth="2" />
-	</svg>
-);
-
-const Cambios = () => (
+/** Nido — el hogar que construís. */
+const Nido = () => (
 	<svg {...svgProps}>
 		<path
-			d="M18 20 H40 A12 12 0 0 1 40 44 H36"
-			fill="none"
-			stroke="#e2b4a8"
-			strokeWidth="5"
-			strokeLinecap="round"
-		/>
-		<path
-			d="M18 20 H40 A12 12 0 0 1 40 44 H36"
-			fill="none"
+			d="M12 38 C16 28, 24 24, 32 24 C40 24, 48 28, 52 38 C48 48, 16 48, 12 38 Z"
+			fill="#c4a882"
 			stroke={INK}
 			strokeWidth="2.5"
-			strokeLinecap="round"
-		/>
-		<path d="M34 40 L36 48 L42 42 Z" fill={INK} />
-		<path
-			d="M46 44 H24 A12 12 0 0 1 24 20 H28"
-			fill="none"
-			stroke="#c4ad82"
-			strokeWidth="5"
-			strokeLinecap="round"
+			strokeLinejoin="round"
 		/>
 		<path
-			d="M46 44 H24 A12 12 0 0 1 24 20 H28"
+			d="M18 36 C22 32, 28 30, 32 30 C36 30, 42 32, 46 36"
 			fill="none"
-			stroke={INK}
-			strokeWidth="2.5"
+			stroke="#8b5a3c"
+			strokeWidth="2"
 			strokeLinecap="round"
 		/>
-		<path d="M30 24 L28 16 L22 22 Z" fill={INK} />
+		<ellipse cx="28" cy="34" rx="4" ry="3" fill="#e2c4b7" stroke={INK} strokeWidth="1.8" />
+		<ellipse cx="38" cy="34" rx="4" ry="3" fill="#e2c4b7" stroke={INK} strokeWidth="1.8" />
 	</svg>
 );
 
-const Euskera = () => (
+/** Kai — la pieza que lo cambió todo. */
+const Kai = () => (
 	<svg {...svgProps}>
-		<rect x="10" y="10" width="44" height="44" rx="6" fill="#c9dbc8" stroke={INK} strokeWidth="2.5" />
-		<text
-			x="32"
-			y="40"
-			textAnchor="middle"
-			fontFamily="'Special Elite', 'Courier New', monospace"
-			fontSize="26"
-			fill={INK}
-		>
-			E
-		</text>
+		<circle cx="32" cy="22" r="10" fill="#e2c4b7" stroke={INK} strokeWidth="2.5" />
+		<path
+			d="M18 52 C18 38, 24 34, 32 34 C40 34, 46 38, 46 52 Z"
+			fill="#b8d1d2"
+			stroke={INK}
+			strokeWidth="2.5"
+		/>
+		<circle cx="28" cy="22" r="1.8" fill={INK} />
+		<circle cx="36" cy="22" r="1.8" fill={INK} />
+		<path
+			d="M28 27 Q32 30 36 27"
+			fill="none"
+			stroke={INK}
+			strokeWidth="1.8"
+			strokeLinecap="round"
+		/>
 	</svg>
 );
 
-const Amigos = () => (
+/** Lagun — amigo en euskera. */
+const Lagun = () => (
 	<svg {...svgProps}>
 		<circle cx="22" cy="22" r="8" fill="#b8d1d2" stroke={INK} strokeWidth="2.2" />
 		<path
@@ -264,37 +208,109 @@ const Amigos = () => (
 	</svg>
 );
 
-const Miedos = () => (
+/** Brindis — celebrar con la gente nueva. */
+const Brindis = () => (
 	<svg {...svgProps}>
 		<path
-			d="M32 10 C42 10, 50 18, 50 30 C50 42, 42 46, 38 52 L32 48 L26 52 C22 46, 14 42, 14 30 C14 18, 22 10, 32 10 Z"
-			fill="#c9b8d4"
+			d="M18 14 H30 L28 36 C28 42, 20 42, 20 36 Z"
+			fill="#c9dbc8"
+			stroke={INK}
+			strokeWidth="2.3"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M34 18 H48 L45 40 C45 46, 36 46, 37 40 Z"
+			fill="#e2b4a8"
+			stroke={INK}
+			strokeWidth="2.3"
+			strokeLinejoin="round"
+		/>
+		<line x1="24" y1="42" x2="24" y2="52" stroke={INK} strokeWidth="2.2" />
+		<line x1="41" y1="46" x2="41" y2="54" stroke={INK} strokeWidth="2.2" />
+		<line x1="18" y1="52" x2="30" y2="52" stroke={INK} strokeWidth="2.2" strokeLinecap="round" />
+		<line x1="35" y1="54" x2="47" y2="54" stroke={INK} strokeWidth="2.2" strokeLinecap="round" />
+	</svg>
+);
+
+/** Vecinos — la gente del nuevo lugar. */
+const Vecinos = () => (
+	<svg {...svgProps}>
+		<path
+			d="M8 40 L8 24 L20 14 L32 24 V40 Z"
+			fill="#e2c4b7"
+			stroke={INK}
+			strokeWidth="2.2"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M32 40 V26 L44 16 L56 26 V40 Z"
+			fill="#c9dbc8"
+			stroke={INK}
+			strokeWidth="2.2"
+			strokeLinejoin="round"
+		/>
+		<rect x="16" y="30" width="6" height="10" fill="#f2ebe2" stroke={INK} strokeWidth="1.6" />
+		<rect x="42" y="30" width="6" height="10" fill="#f2ebe2" stroke={INK} strokeWidth="1.6" />
+	</svg>
+);
+
+/** Mendi — monte. */
+const Mendi = () => (
+	<svg {...svgProps}>
+		<path
+			d="M8 48 L24 22 L32 34 L40 18 L56 48 Z"
+			fill="#7a9a78"
 			stroke={INK}
 			strokeWidth="2.5"
 			strokeLinejoin="round"
 		/>
-		<circle cx="25" cy="28" r="3" fill={INK} />
-		<circle cx="39" cy="28" r="3" fill={INK} />
 		<path
-			d="M26 38 Q32 34 38 38"
+			d="M24 22 L28 28 L32 34"
 			fill="none"
-			stroke={INK}
-			strokeWidth="2.2"
+			stroke="#f2ebe2"
+			strokeWidth="2"
 			strokeLinecap="round"
 		/>
 	</svg>
 );
 
-const Roble = () => (
+/** Niebla — el País Vasco cuando se esconde. */
+const Niebla = () => (
 	<svg {...svgProps}>
-		<ellipse cx="32" cy="28" rx="18" ry="16" fill="#6fbf7a" stroke={INK} strokeWidth="2.5" />
-		<ellipse cx="22" cy="24" rx="9" ry="8" fill="#58a866" stroke={INK} strokeWidth="2" />
-		<ellipse cx="42" cy="24" rx="9" ry="8" fill="#58a866" stroke={INK} strokeWidth="2" />
-		<rect x="28" y="40" width="8" height="14" rx="1" fill="#8b5a3c" stroke={INK} strokeWidth="2" />
+		<path
+			d="M10 28 C16 22, 28 22, 34 28 C40 22, 50 24, 54 30"
+			fill="none"
+			stroke="#c5d8e4"
+			strokeWidth="5"
+			strokeLinecap="round"
+		/>
+		<path
+			d="M8 38 C16 32, 26 34, 34 38 C42 32, 52 34, 56 40"
+			fill="none"
+			stroke="#a8c0d0"
+			strokeWidth="5"
+			strokeLinecap="round"
+		/>
+		<path
+			d="M12 48 C20 42, 30 44, 38 48 C46 42, 52 44, 56 48"
+			fill="none"
+			stroke="#c5d8e4"
+			strokeWidth="4"
+			strokeLinecap="round"
+		/>
+		<path
+			d="M10 28 C16 22, 28 22, 34 28 C40 22, 50 24, 54 30"
+			fill="none"
+			stroke={INK}
+			strokeWidth="2"
+			strokeLinecap="round"
+			opacity="0.55"
+		/>
 	</svg>
 );
 
-const Ola = () => (
+/** Marea — la costa. */
+const Marea = () => (
 	<svg {...svgProps}>
 		<path
 			d="M8 40 C16 28, 24 28, 32 40 C40 52, 48 52, 56 40 V50 H8 Z"
@@ -310,10 +326,46 @@ const Ola = () => (
 			strokeWidth="2.2"
 			strokeLinecap="round"
 		/>
+		<path
+			d="M8 22 L20 30 L28 18 L40 28 L56 16"
+			fill="none"
+			stroke="#5a6a58"
+			strokeWidth="2.2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
 	</svg>
 );
 
-const Familia = () => (
+/** Lazo — el vínculo. */
+const Lazo = () => (
+	<svg {...svgProps}>
+		<path
+			d="M20 20 C12 20, 12 34, 22 34 C30 34, 30 26, 32 26 C34 26, 34 34, 42 34 C52 34, 52 20, 44 20 C36 20, 36 28, 32 28 C28 28, 28 20, 20 20 Z"
+			fill="#e2b4a8"
+			stroke={INK}
+			strokeWidth="2.5"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M28 34 L24 50 M36 34 L40 50"
+			fill="none"
+			stroke={INK}
+			strokeWidth="2.4"
+			strokeLinecap="round"
+		/>
+		<path
+			d="M24 50 L20 46 M24 50 L28 46 M40 50 L36 46 M40 50 L44 46"
+			fill="none"
+			stroke={INK}
+			strokeWidth="2"
+			strokeLinecap="round"
+		/>
+	</svg>
+);
+
+/** Bihotz — corazón. */
+const Bihotz = () => (
 	<svg {...svgProps}>
 		<path
 			d="M32 48 C32 48, 12 34, 12 22 C12 14, 18 10, 24 10 C28 10, 31 12, 32 16 C33 12, 36 10, 40 10 C46 10, 52 14, 52 22 C52 34, 32 48, 32 48 Z"
@@ -326,22 +378,22 @@ const Familia = () => (
 );
 
 const ICONS: Record<TileFaceId, () => ReactNode> = {
-	monte: Monte,
-	mar: Mar,
-	hogar: Hogar,
-	camino: Camino,
-	lluvia: Lluvia,
-	sol: Sol,
-	coche: Coche,
-	rio: Rio,
-	puente: Puente,
-	cambios: Cambios,
-	euskera: Euskera,
-	amigos: Amigos,
-	miedos: Miedos,
-	roble: Roble,
-	ola: Ola,
-	familia: Familia,
+	boxes: Cajas,
+	keys: Llaves,
+	home: Etxe,
+	path: Ruta,
+	table: Mesa,
+	coffee: Cafe,
+	nest: Nido,
+	kai: Kai,
+	friends: Lagun,
+	toast: Brindis,
+	neighbors: Vecinos,
+	mountain: Mendi,
+	fog: Niebla,
+	sea: Marea,
+	bow: Lazo,
+	heart: Bihotz,
 };
 
 export const TileIcon = ({ faceId }: { faceId: TileFaceId }) => {

@@ -11,19 +11,18 @@ export const Puzzle03Screen = () => {
 			<PuzzleIntroCard
 				label="Archivo clasificado · 03 · Murdoku 10×10"
 				title="Nacimiento de Kai"
-				kicker="La casa de Hondarribia"
+				kicker="Hondarribia · el mar demasiado azul"
 				alreadyDone={game.alreadyDone}
 				saveCode={game.saveCode}
 				startLabel="Entrar en la casa"
 				onStart={() => game.setStarted(true)}
 			>
-				Hondarribia. El mar demasiado azul para un caso así. Fuimos a traer a
-				Kai al mundo; días que brillaban… y una casa que, a ratos, se llenaba
-				de más sospechosos de los que cabían en el plano: unos en el salón,
-				otros colgados desde Argentina. El piso que encontraste era perfecto.
-				Demasiado perfecto. Ahora reconstruye la escena pieza a
-				pieza. La pregunta del expediente: ¿quién cuidaba a Kai aquel
-				día?
+				Hondarribia. El mar, demasiado azul para un caso así. Kai acababa
+				de llegar y la casa era un hormiguero: visitas en el salón,
+				ruido en la cocina, voces al teléfono desde Argentina. Nadie lo
+				perdió de vista. Nadie supo decir dónde estaba. Reconstruye la
+				escena. Una pregunta, un pequeño y demasiados testigos: ¿dónde
+				estaba Kai?
 			</PuzzleIntroCard>
 		);
 	}
@@ -33,7 +32,7 @@ export const Puzzle03Screen = () => {
 			game={game}
 			brand="Nacimiento de Kai"
 			caseName="Hondarribia · casa · 10×10"
-			boardRule="1 por fila y columna · sofá/hamaca se ocupan · tacha lo imposible"
+			boardRule="1 por fila y columna · sofá, banco y alfombra se ocupan · tacha lo imposible"
 			furnitureObjects={FURNITURE_OBJECT_NAMES}
 			gridClassName="board-grid board-grid--10"
 		/>

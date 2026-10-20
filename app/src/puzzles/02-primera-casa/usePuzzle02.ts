@@ -160,7 +160,7 @@ export const usePuzzle02 = () => {
 				event.preventDefault();
 				setSelectedId((current) => {
 					if (!current) {
-						setStatus('elige una estancia para rotar');
+						setStatus('Elige una estancia para rotar');
 						return current;
 					}
 					setPoses((previous) => ({
@@ -170,7 +170,7 @@ export const usePuzzle02 = () => {
 							rot: (previous[current].rot + 1) % 6,
 						},
 					}));
-					setStatus('rotada 60°');
+					setStatus('Rotada 60°');
 					return current;
 				});
 			}
@@ -178,7 +178,7 @@ export const usePuzzle02 = () => {
 				event.preventDefault();
 				setSelectedId((current) => {
 					if (!current) {
-						setStatus('elige una estancia para voltear');
+						setStatus('Elige una estancia para voltear');
 						return current;
 					}
 					setPoses((previous) => ({
@@ -188,13 +188,13 @@ export const usePuzzle02 = () => {
 							face: previous[current].face === 0 ? 1 : 0,
 						},
 					}));
-					setStatus('cara volteada');
+					setStatus('Cara volteada');
 					return current;
 				});
 			}
 			if (event.key === 'Escape') {
 				setSelectedId(null);
-				setStatus('pieza soltada');
+				setStatus('Pieza soltada');
 			}
 		};
 		window.addEventListener('keydown', onKey);
@@ -248,7 +248,7 @@ export const usePuzzle02 = () => {
 
 	const rotateSelected = () => {
 		if (!selectedId) {
-			setStatus('elige una estancia para rotar');
+			setStatus('Elige una estancia para rotar');
 			return;
 		}
 		setPoses((previous) => ({
@@ -258,12 +258,12 @@ export const usePuzzle02 = () => {
 				rot: (previous[selectedId].rot + 1) % 6,
 			},
 		}));
-		setStatus('rotada 60°');
+		setStatus('Rotada 60°');
 	};
 
 	const flipSelected = () => {
 		if (!selectedId) {
-			setStatus('elige una estancia para voltear');
+			setStatus('Elige una estancia para voltear');
 			return;
 		}
 		setPoses((previous) => ({
@@ -273,12 +273,12 @@ export const usePuzzle02 = () => {
 				face: previous[selectedId].face === 0 ? 1 : 0,
 			},
 		}));
-		setStatus('cara volteada');
+		setStatus('Cara volteada');
 	};
 
 	const tryPlaceAt = (anchor: Axial) => {
 		if (!selectedId || !selectedPose) {
-			setStatus('elige una estancia del taller');
+			setStatus('Elige una estancia del taller');
 			return false;
 		}
 		const shape = getOrientedShape(
@@ -288,7 +288,7 @@ export const usePuzzle02 = () => {
 		);
 		const cells = placeShapeAt(shape, anchor, 0);
 		if (!canPlaceCells(cells, occupancy, selectedId)) {
-			setStatus('no encaja ahí — rota, voltea o elige otro hueco');
+			setStatus('No encaja ahí — rota, voltea o elige otro hueco');
 			return false;
 		}
 
@@ -308,7 +308,7 @@ export const usePuzzle02 = () => {
 		setHoverCell(null);
 
 		if (isBoardSolved(nextPlacements)) {
-			setStatus('¡La casa vuelve a ser un hogar!');
+			setStatus('El plano encaja. La casa vuelve a ser un hogar.');
 			clearDraft(PUZZLE_ID);
 			completePuzzle(PUZZLE_ID);
 			setShowSaveCode(true);
@@ -316,7 +316,7 @@ export const usePuzzle02 = () => {
 			const remaining = FREE_PIECE_IDS.length - nextPlacements.length;
 			setStatus(
 				remaining === 0
-					? 'algo no cuadra — revisa las estancias'
+					? 'Algo no cuadra — revisa las estancias'
 					: `${PIECE_BY_ID[next.pieceId].label} colocada · faltan ${remaining}`
 			);
 		}
@@ -335,39 +335,39 @@ export const usePuzzle02 = () => {
 
 	const handleClear = () => {
 		if (placements.length === 0) {
-			setStatus('el plano ya está vacío');
+			setStatus('El plano ya está vacío');
 			return;
 		}
 		pushHistory();
 		setPlacements([]);
 		setSelectedId(null);
-		setStatus('plano vaciado — quedan las ruinas fijas');
+		setStatus('Plano vaciado — quedan las ruinas fijas');
 	};
 
 	const handleUndo = () => {
 		const previous = history.at(-1);
 		if (!previous) {
-			setStatus('no hay movimientos que deshacer');
+			setStatus('No hay movimientos que deshacer');
 			return;
 		}
 		setPlacements(previous);
 		setHistory((entries) => entries.slice(0, -1));
 		setSelectedId(null);
-		setStatus('último movimiento deshecho');
+		setStatus('Último movimiento deshecho');
 	};
 
 	const handleSubmit = () => {
 		if (placements.length < FREE_PIECE_IDS.length) {
 			setStatus(
-				`faltan ${FREE_PIECE_IDS.length - placements.length} estancias por colocar`
+				`Faltan ${FREE_PIECE_IDS.length - placements.length} estancias por colocar`
 			);
 			return;
 		}
 		if (!isBoardSolved(placements)) {
-			setStatus('aún no es hogar — prueba otra disposición');
+			setStatus('Aún no es hogar — prueba otra disposición');
 			return;
 		}
-		setStatus('¡La casa vuelve a ser un hogar!');
+		setStatus('El plano encaja. La casa vuelve a ser un hogar.');
 		clearDraft(PUZZLE_ID);
 		completePuzzle(PUZZLE_ID);
 		setShowSaveCode(true);

@@ -21,7 +21,7 @@ export const PuzzleIntroCard = ({
 	alreadyDone,
 	saveCode,
 	startLabel,
-	replayLabel = 'Jugar de nuevo',
+	replayLabel = 'Reabrir el dossier',
 	onStart,
 }: PuzzleIntroCardProps) => (
 	<div className="landing-shell">
@@ -32,7 +32,8 @@ export const PuzzleIntroCard = ({
 			<p className="landing-copy">{children}</p>
 			{alreadyDone && (
 				<p className="landing-copy code-hint">
-					Ya tienes este acertijo guardado. Código: <strong>{saveCode}</strong>
+					Dossier resuelto. Clave:{' '}
+					<strong>{saveCode}</strong>
 				</p>
 			)}
 			<button type="button" className="primary-button" onClick={onStart}>

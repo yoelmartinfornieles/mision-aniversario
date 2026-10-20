@@ -15,6 +15,7 @@ type BoardProps = {
 	selectedId: string | null;
 	matchedPulse: string[];
 	rejectPulse: string[];
+	rescueIds: string[];
 	backgroundSrc: string;
 	onTileClick: (tile: MahjongTile) => void;
 };
@@ -25,6 +26,7 @@ export const Board = ({
 	selectedId,
 	matchedPulse,
 	rejectPulse,
+	rescueIds,
 	backgroundSrc,
 	onTileClick,
 }: BoardProps) => {
@@ -116,6 +118,7 @@ export const Board = ({
 							isSelected={selectedId === tile.uid}
 							isMatched={matchedPulse.includes(tile.uid)}
 							isReject={rejectPulse.includes(tile.uid)}
+							isRescue={rescueIds.includes(tile.uid)}
 							onTileClick={onTileClick}
 						/>
 					);

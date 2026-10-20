@@ -16,20 +16,23 @@ export const Puzzle04Screen = () => {
 			<PuzzleIntroCard
 				label="Archivo clasificado · 04 · Mahjong"
 				title="Mudanza a Arroa"
-				kicker="Arroa Behea · Zestoa · capas que no quieren caer"
+				kicker="Arroa Behea · Zestoa · un hogar entre las pistas"
 				alreadyDone={game.alreadyDone}
 				saveCode={game.saveCode}
 				startLabel="Abrir el tablero"
 				replayLabel="Reabrir el dossier"
 				onStart={() => game.setStarted(true)}
 			>
-				Arroa Behea. Cambio de comunidad, idioma ajeno, retos que llaman
-				a la puerta sin avisar… y, debajo de todo eso, algo que el
-				expediente no sabe archivar: la diversión. Como en todo buen
-				caso, hay que ir quitando capas hasta que el paisaje confiesa.
-				Gracias por venir. Por volver a levantar un hogar. Por vigilar
-				cada día que nadie se quede fuera del plano. Te quiero. Despeja
-				el tablero. Despeja el expediente.
+				Otra dirección en el expediente. Una fecha adelantada, lluvia, mar y monte. 
+				Un idioma que aún no sabíamos descifrar y nuevos nombres al otro lado de la puerta.
+				No faltaron los retos. Tampoco las risas. Revisé las pruebas:
+				habíamos vuelto a hacer hogar. Tú te encargabas de que nadie
+				se quedara fuera. Yo seguía sin encontrar cómo darte las gracias.
+				Que conste por escrito: te quiero.
+				<br />
+				<br />
+				La siguiente pista está bajo las fichas. Retira las parejas.
+				Cuando no quede nada que la tape, el paisaje hablará por sí solo.
 			</PuzzleIntroCard>
 		);
 	}
@@ -58,15 +61,26 @@ export const Puzzle04Screen = () => {
 						{game.status}
 					</p>
 					<p className="mahjong-hint">
-						Toca una ficha libre, luego su pareja · despeja para revelar la
-						foto
+						Toca una ficha libre, luego su pareja · despeja para revelar la foto
 					</p>
 					<div className="mahjong-controls">
 						<button
 							type="button"
+							className="tool-button secondary"
+							onClick={() => void game.handleRescue()}
+							disabled={
+								game.rescueBusy ||
+								game.matchedPulse.length > 0 ||
+								game.remaining === 0
+							}
+						>
+							{game.rescueBusy ? 'Analizando…' : 'Ayuda de rescate'}
+						</button>
+						<button
+							type="button"
 							className="tool-button action"
 							onClick={game.handleUndo}
-							disabled={!game.canUndo}
+							disabled={!game.canUndo || game.matchedPulse.length > 0}
 						>
 							↶ Deshacer
 						</button>
@@ -74,6 +88,7 @@ export const Puzzle04Screen = () => {
 							type="button"
 							className="tool-button secondary"
 							onClick={game.handleReset}
+							disabled={game.matchedPulse.length > 0}
 						>
 							Reiniciar
 						</button>
@@ -81,17 +96,13 @@ export const Puzzle04Screen = () => {
 					<div className="mahjong-legend" aria-hidden>
 						<div className="mahjong-legend-item">
 							<span className="mahjong-legend-swatch is-free" />
-							Libre — se puede tocar
+							Libre: se puede tocar
 						</div>
 						<div className="mahjong-legend-item">
 							<span className="mahjong-legend-swatch is-blocked" />
-							Bloqueada — tapa o flancos
+							Bloqueada: tapa o flancos
 						</div>
 					</div>
-					<p className="mahjong-help">
-						Libre = nada encima y lado izquierdo o derecho abierto. Bajo las
-						fichas espera Arroa Behea.
-					</p>
 				</aside>
 
 				<section className="mahjong-board-panel">
@@ -101,6 +112,7 @@ export const Puzzle04Screen = () => {
 						selectedId={game.selectedId}
 						matchedPulse={game.matchedPulse}
 						rejectPulse={game.rejectPulse}
+						rescueIds={game.rescueIds}
 						backgroundSrc={BACKGROUND_SRC}
 						onTileClick={game.handleTileClick}
 					/>

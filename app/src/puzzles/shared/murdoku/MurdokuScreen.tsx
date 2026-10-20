@@ -145,7 +145,7 @@ export const MurdokuScreen = ({
 								<path d="M4.5 19.5h15" />
 							</svg>
 						</span>
-						<span>limpiar</span>
+						<span>Limpiar</span>
 					</button>
 					<button
 						type="button"

@@ -183,10 +183,73 @@ const Lamp = ({ title }: IconProps) => (
 
 const Cart = ({ title }: IconProps) => (
 	<svg {...svgProps(title)}>
-		<rect x="12" y="22" width="36" height="20" rx="3" fill="#e8a05a" stroke="#2a2d28" strokeWidth="2.5" />
+		<rect x="10" y="24" width="38" height="18" rx="3" fill="#f2e6d8" stroke="#2a2d28" strokeWidth="2.5" />
+		{[14, 22, 30, 38].map((x) => (
+			<rect key={x} x={x} y="24" width="4" height="18" fill="#e87878" />
+		))}
+		<rect x="18" y="12" width="22" height="14" rx="2" fill="#7ec8e8" stroke="#2a2d28" strokeWidth="2" />
+		<circle cx="24" cy="19" r="2.5" fill="#e87878" />
+		<circle cx="32" cy="18" r="2.5" fill="#f0a050" />
+		<circle cx="29" cy="22" r="2" fill="#6fb078" />
 		<circle cx="20" cy="46" r="5" fill="#2a2d28" />
-		<circle cx="44" cy="46" r="5" fill="#2a2d28" />
-		<path d="M48 22 L56 12" stroke="#2a2d28" strokeWidth="2.5" />
+		<circle cx="42" cy="46" r="5" fill="#2a2d28" />
+		<path d="M48 24 L56 14" stroke="#2a2d28" strokeWidth="2.5" />
+	</svg>
+);
+
+const Castle = ({ title }: IconProps) => (
+	<svg {...svgProps(title)}>
+		<rect x="12" y="28" width="40" height="24" fill="#c9b8a0" stroke="#2a2d28" strokeWidth="2.5" />
+		<rect x="8" y="18" width="12" height="34" fill="#b8a890" stroke="#2a2d28" strokeWidth="2" />
+		<rect x="44" y="18" width="12" height="34" fill="#b8a890" stroke="#2a2d28" strokeWidth="2" />
+		<rect x="26" y="14" width="12" height="38" fill="#d4c4a8" stroke="#2a2d28" strokeWidth="2" />
+		<path d="M8 18 L14 8 L20 18 Z" fill="#e87878" stroke="#2a2d28" strokeWidth="2" />
+		<path d="M26 14 L32 4 L38 14 Z" fill="#e87878" stroke="#2a2d28" strokeWidth="2" />
+		<path d="M44 18 L50 8 L56 18 Z" fill="#e87878" stroke="#2a2d28" strokeWidth="2" />
+		<rect x="28" y="36" width="8" height="16" fill="#5a4a3a" stroke="#2a2d28" strokeWidth="1.5" />
+	</svg>
+);
+
+const Carousel = ({ title }: IconProps) => (
+	<svg {...svgProps(title)}>
+		<path d="M8 28 L32 10 L56 28 Z" fill="#e87878" stroke="#2a2d28" strokeWidth="2.5" />
+		{[16, 24, 32, 40, 48].map((x, i) => (
+			<path
+				key={x}
+				d={`M${x} 28 L${x + 3} 34`}
+				stroke={i % 2 ? '#f5f0e8' : '#e87878'}
+				strokeWidth="3.5"
+			/>
+		))}
+		<line x1="20" y1="28" x2="20" y2="44" stroke="#2a2d28" strokeWidth="2" />
+		<line x1="32" y1="28" x2="32" y2="46" stroke="#2a2d28" strokeWidth="2" />
+		<line x1="44" y1="28" x2="44" y2="44" stroke="#2a2d28" strokeWidth="2" />
+		<ellipse cx="32" cy="48" rx="22" ry="6" fill="#ddb892" stroke="#2a2d28" strokeWidth="2.5" />
+		<circle cx="20" cy="40" r="3" fill="#7ec8e8" stroke="#2a2d28" strokeWidth="1.5" />
+		<circle cx="44" cy="40" r="3" fill="#f0a050" stroke="#2a2d28" strokeWidth="1.5" />
+	</svg>
+);
+
+const Coaster = ({ title }: IconProps) => (
+	<svg {...svgProps(title)}>
+		<path
+			d="M6 44 Q18 12 32 28 Q46 44 58 16"
+			fill="none"
+			stroke="#2a2d28"
+			strokeWidth="3"
+			strokeLinecap="round"
+		/>
+		<path
+			d="M6 48 Q18 16 32 32 Q46 48 58 20"
+			fill="none"
+			stroke="#8eb8c8"
+			strokeWidth="2"
+		/>
+		<rect x="28" y="22" width="10" height="8" rx="2" fill="#e87878" stroke="#2a2d28" strokeWidth="2" />
+		<circle cx="30" cy="32" r="2.5" fill="#2a2d28" />
+		<circle cx="36" cy="32" r="2.5" fill="#2a2d28" />
+		<rect x="10" y="46" width="6" height="10" fill="#6a5a4a" stroke="#2a2d28" strokeWidth="1.5" />
+		<rect x="48" y="40" width="6" height="16" fill="#6a5a4a" stroke="#2a2d28" strokeWidth="1.5" />
 	</svg>
 );
 
@@ -296,6 +359,17 @@ const Tap = ({ title }: IconProps) => (
 	</svg>
 );
 
+const Rug = ({ title }: IconProps) => (
+	<svg {...svgProps(title)}>
+		<rect x="6" y="16" width="52" height="32" rx="2" fill="#9c3b3b" stroke="#2a2d28" strokeWidth="2.5" />
+		<rect x="12" y="22" width="40" height="20" fill="#f3e6c8" stroke="#2a2d28" strokeWidth="1.5" />
+		<rect x="18" y="27" width="28" height="10" fill="none" stroke="#9c3b3b" strokeWidth="1.5" />
+		{[10, 18, 26, 34, 42, 50].map((x) => (
+			<line key={x} x1={x} y1="48" x2={x} y2="54" stroke="#9c3b3b" strokeWidth="2" />
+		))}
+	</svg>
+);
+
 const Fallback = ({ title, label }: IconProps & { label: string }) => (
 	<svg {...svgProps(title)}>
 		<rect x="8" y="8" width="48" height="48" rx="6" fill="#d8d4c8" stroke="#2a2d28" strokeWidth="2.5" />
@@ -318,6 +392,7 @@ const ICONS: Record<string, (props: IconProps) => ReactNode> = {
 	silla: Chair,
 	taburete: Chair,
 	banqueta: Bench,
+	banco: Bench,
 	cama: Bed,
 	cuna: Crib,
 	hamaca: Hammock,
@@ -337,17 +412,25 @@ const ICONS: Record<string, (props: IconProps) => ReactNode> = {
 	escalera: Stairs,
 	farola: Lamp,
 	carro: Cart,
+	carrito: Cart,
+	'carro de chuches': Cart,
 	seto: Hedge,
+	topiario: Hedge,
+	castillo: Castle,
+	carrusel: Carousel,
+	'montaña rusa': Coaster,
 	fuente: Fountain,
 	cohete: Rocket,
 	barco: Boat,
 	tronco: Tree,
+	árbol: Tree,
 	taza: Cup,
 	toldo: Awning,
 	zapatero: ShoeRack,
 	cambiador: ChangingTable,
 	tendedero: ClothesLine,
 	cañero: Tap,
+	alfombra: Rug,
 };
 
 export const FurnitureIcon = ({

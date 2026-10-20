@@ -1,20 +1,20 @@
 export type TileFaceId =
-	| 'monte'
-	| 'mar'
-	| 'hogar'
-	| 'camino'
-	| 'lluvia'
-	| 'sol'
-	| 'coche'
-	| 'rio'
-	| 'puente'
-	| 'cambios'
-	| 'euskera'
-	| 'amigos'
-	| 'miedos'
-	| 'roble'
-	| 'ola'
-	| 'familia';
+	| 'boxes'
+	| 'keys'
+	| 'home'
+	| 'path'
+	| 'table'
+	| 'coffee'
+	| 'nest'
+	| 'kai'
+	| 'friends'
+	| 'toast'
+	| 'neighbors'
+	| 'mountain'
+	| 'fog'
+	| 'sea'
+	| 'bow'
+	| 'heart';
 
 export type GridPos = {
 	x: number;

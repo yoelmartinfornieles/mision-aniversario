@@ -11,6 +11,7 @@ type TileProps = {
 	isSelected: boolean;
 	isMatched: boolean;
 	isReject: boolean;
+	isRescue: boolean;
 	onTileClick: (tile: MahjongTile) => void;
 };
 
@@ -22,6 +23,7 @@ export const Tile = memo(function Tile({
 	isSelected,
 	isMatched,
 	isReject,
+	isRescue,
 	onTileClick,
 }: TileProps) {
 	const face = FACE_BY_ID[tile.faceId];
@@ -35,6 +37,7 @@ export const Tile = memo(function Tile({
 				isSelected ? 'is-selected' : '',
 				isMatched ? 'is-matched' : '',
 				isReject ? 'is-reject' : '',
+				isRescue ? 'is-rescue' : '',
 			]
 				.filter(Boolean)
 				.join(' ')}
@@ -44,7 +47,7 @@ export const Tile = memo(function Tile({
 				zIndex: 10 + tile.z * 20 + tile.y,
 				['--tile-tone' as string]: face.tone,
 			}}
-			aria-label={`${face.label}${isFree ? '' : ' (bloqueada)'}`}
+			aria-label={`${face.label}${isFree ? '' : ' (bloqueada)'}${isRescue ? ' (pareja de rescate)' : ''}`}
 			aria-pressed={isSelected}
 			disabled={isMatched}
 			onClick={() => onTileClick(tile)}

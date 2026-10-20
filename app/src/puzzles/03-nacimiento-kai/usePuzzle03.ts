@@ -30,12 +30,12 @@ export const usePuzzle03 = () =>
 		getRoomClass,
 		hints: HINTS,
 		initialStatus:
-			'Una por fila y columna. Lee las pistas; Kai al final, con quien lo cuidaba.',
+			'Una por fila y columna. Lee las pistas; Kai al final, a solas con alguien.',
 		solvedStatus:
-			'Archivo: quien cuidaba a Kai era Carla, a solas en la Habitación grande.',
+			'Archivo: Kai estaba en la Habitación grande, a solas con Carla.',
 		getPreVictimError: getPreKaiError,
 		isBoardSolved,
 		victimWaitPrompt:
-			'coloca al resto según sus pistas antes de situar a Kai',
-		victimCorrectedPrompt: 'corregido — vuelve a colocar a Kai al final',
+			'Coloca al resto según sus pistas antes de situar a Kai',
+		victimCorrectedPrompt: 'Corregido — vuelve a colocar a Kai al final',
 	});

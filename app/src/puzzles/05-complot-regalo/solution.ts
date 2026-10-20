@@ -2,16 +2,16 @@ import type { CellKey } from './types';
 
 /**
  * Unique Murdoku solution (8×8, one per row & column).
- * Castillo: solo Carla + Kai (quien eligió el regalo).
- * Selva: solo George.
+ * Forzada solo por pistas + fila/columna + víctima a solas en su sala.
+ * Castillo: Carla + Yoel (quien eligió el regalo). Selva: solo George.
  */
 export const SOLUTION: Record<number, CellKey> = {
-	1: '0-0', // Yoel — Avenida, farola
-	2: '2-3', // Kai — Castillo (eligió el regalo)
-	3: '6-2', // Luar — Espacio, cohete
-	4: '1-7', // Haizea — Avenida, carro
-	5: '5-5', // Saioa — Plaza, sentada en banqueta (este de fuente)
-	6: '7-6', // Unai — Muelle, barco
-	7: '4-1', // George — Selva, tronco
+	1: '2-3', // Yoel — carro+castillo, no esquina
+	2: '0-0', // Kai — carro de chuches al norte de Haizea
+	3: '6-2', // Luar — Espacio, ventana entre dos farolas
+	4: '1-7', // Haizea — Avenida, ventana
+	5: '5-5', // Saioa — carrusel
+	6: '7-6', // Unai — Muelle, ventana junto a barco
+	7: '4-1', // George — Selva, junto a la montaña rusa
 	8: '3-4', // Carla — Castillo (al final)
 };

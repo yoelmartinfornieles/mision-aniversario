@@ -119,9 +119,9 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 		timer = 'elapsed',
 		countdownSeconds = 0,
 		countdownExtensionSeconds = 0,
-		selectPrompt = 'selecciona un personaje o el modo X',
-		victimWaitPrompt = 'coloca al resto según sus pistas antes de situar a la víctima',
-		victimCorrectedPrompt = 'corregido — vuelve a colocar a la víctima al final',
+		selectPrompt = 'Selecciona un personaje o el modo X',
+		victimWaitPrompt = 'Coloca al resto según sus pistas antes de situar a la víctima',
+		victimCorrectedPrompt = 'Corregido — vuelve a colocar a la víctima al final',
 		onSolved,
 	} = config;
 
@@ -256,10 +256,11 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 				highlight: activeHighlight,
 				roomMatrix,
 				furnitureCells,
+				windowCells,
 				placements,
 				suspects,
 			}),
-		[activeHighlight, placements, roomMatrix, furnitureCells, suspects]
+		[activeHighlight, placements, roomMatrix, furnitureCells, windowCells, suspects]
 	);
 
 	const { rows: lockedRows, columns: lockedColumns } = useMemo(
@@ -270,7 +271,7 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 	const handleClockExpire = useCallback(() => {
 		if (timer !== 'countdown') return;
 		setTimedOut(true);
-		setStatus('Se acabó el tiempo del desfile…');
+		setStatus('Se acabó el tiempo del reloj del castillo.');
 	}, [timer]);
 
 	const pushHistory = () => {
@@ -283,13 +284,13 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 		const key = toCellKey(row, column);
 		const furniture = furnitureCells[key];
 		if (furniture?.role === 'blocking') {
-			setStatus(`esa casilla está bloqueada por ${furniture.kind}`);
+			setStatus(`Esa casilla está bloqueada por ${furniture.kind}`);
 			return;
 		}
 
 		if (markMode) {
 			if (placements[key] !== undefined) {
-				setStatus('no se puede tachar una casilla ocupada');
+				setStatus('No se puede tachar una casilla ocupada');
 				return;
 			}
 			pushHistory();
@@ -299,7 +300,7 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 				else next[key] = true;
 				return next;
 			});
-			setStatus(emptyMarks[key] ? 'marca X retirada' : 'casilla tachada');
+			setStatus(emptyMarks[key] ? 'Marca X retirada' : 'Casilla tachada');
 			return;
 		}
 
@@ -339,7 +340,7 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 		}
 
 		if (!hasUniqueRowsAndColumns(nextPlacements)) {
-			setStatus('esa fila o columna ya está ocupada');
+			setStatus('Esa fila o columna ya está ocupada');
 			return;
 		}
 
@@ -373,20 +374,20 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 		setEmptyMarks({});
 		setSelectedSuspectId(null);
 		setMarkMode(false);
-		setStatus('tablero reiniciado');
+		setStatus('Tablero reiniciado');
 	};
 
 	const handleUndo = () => {
 		if (boardLocked) return;
 		const previous = history.at(-1);
 		if (!previous) {
-			setStatus('no hay movimientos que deshacer');
+			setStatus('No hay movimientos que deshacer');
 			return;
 		}
 		setPlacements(previous.placements);
 		setEmptyMarks(previous.emptyMarks);
 		setHistory((entries) => entries.slice(0, -1));
-		setStatus('último movimiento deshecho');
+		setStatus('Último movimiento deshecho');
 	};
 
 	const toggleMarkMode = () => {
@@ -395,7 +396,7 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 		setMarkMode(nextMode);
 		setSelectedSuspectId(null);
 		setStatus(
-			nextMode ? 'modo X: tacha casillas imposibles' : 'modo X desactivado'
+			nextMode ? 'Modo X: tacha casillas imposibles' : 'Modo X desactivado'
 		);
 	};
 
@@ -409,7 +410,7 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 		if (boardLocked && !solved) return;
 		if (!allPlaced) {
 			setStatus(
-				`coloca a todos primero (${Object.keys(placements).length}/${suspects.length})`
+				`Coloca a todos primero (${Object.keys(placements).length}/${suspects.length})`
 			);
 			return;
 		}
@@ -418,7 +419,7 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 			return;
 		}
 		if (!isBoardSolved(placements)) {
-			setStatus('aún no cuadra del todo — revisa las pistas');
+			setStatus('Aún no cuadra del todo — revisa las pistas');
 			return;
 		}
 
@@ -439,7 +440,7 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 		setClockInitial(next);
 		setClockSession((value) => value + 1);
 		setTimedOut(false);
-		setStatus('El desfile da una vuelta más. Cinco minutos extra.');
+		setStatus('El reloj del castillo da otra vuelta. Cinco minutos extra.');
 	};
 
 	const resetTimer = () => {
@@ -447,7 +448,7 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 		setClockInitial(countdownSeconds);
 		setClockSession((value) => value + 1);
 		setTimedOut(false);
-		setStatus('Reloj reiniciado. El parque sigue en marcha.');
+		setStatus('Reloj del castillo reiniciado. El parque sigue en marcha.');
 	};
 
 	const begin = () => {
@@ -462,6 +463,7 @@ export const useMurdokuPuzzle = <TRoom extends string = string>(
 	};
 
 	return {
+		puzzleId,
 		BOARD_ROWS: boardRows,
 		BOARD_COLUMNS: boardColumns,
 		started,

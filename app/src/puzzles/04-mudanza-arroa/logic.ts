@@ -23,13 +23,9 @@ const shuffleInPlace = <T>(items: T[], rng: () => number): T[] => {
 
 const posKey = (pos: GridPos): string => `${pos.x},${pos.y},${pos.z}`;
 
-export const isCovered = (
-	tile: GridPos,
-	tiles: readonly GridPos[]
-): boolean =>
+export const isCovered = (tile: GridPos, tiles: readonly GridPos[]): boolean =>
 	tiles.some(
-		(other) =>
-			other.x === tile.x && other.y === tile.y && other.z > tile.z
+		(other) => other.x === tile.x && other.y === tile.y && other.z > tile.z
 	);
 
 export const hasNeighbor = (
@@ -39,9 +35,7 @@ export const hasNeighbor = (
 ): boolean =>
 	tiles.some(
 		(other) =>
-			other.x === tile.x + dx &&
-			other.y === tile.y &&
-			other.z === tile.z
+			other.x === tile.x + dx && other.y === tile.y && other.z === tile.z
 	);
 
 /** Classic rule: nothing above, and open on the left or the right. */
@@ -69,6 +63,81 @@ export const countFreeMatches = (tiles: readonly MahjongTile[]): number => {
 		pairs += Math.floor(count / 2);
 	}
 	return pairs;
+};
+
+export type RescueResult =
+	| { kind: 'pair'; tiles: [MahjongTile, MahjongTile] }
+	| { kind: 'unsolvable' }
+	| { kind: 'complete' }
+	| { kind: 'inconclusive' };
+
+export const findRescuePair = async (
+	tiles: readonly MahjongTile[],
+	isCancelled: () => boolean = () => false
+): Promise<RescueResult> => {
+	if (tiles.length === 0) return { kind: 'complete' };
+
+	const bits = tiles.map((_, index) => 1n << BigInt(index));
+	const maskFor = (predicate: (other: MahjongTile) => boolean) =>
+		tiles.reduce(
+			(mask, other, index) => (predicate(other) ? mask | bits[index] : mask),
+			0n
+		);
+	const blockers = tiles.map((tile) => ({
+		above: maskFor(
+			(other) => other.x === tile.x && other.y === tile.y && other.z > tile.z
+		),
+		left: maskFor(
+			(other) =>
+				other.x === tile.x - 1 && other.y === tile.y && other.z === tile.z
+		),
+		right: maskFor(
+			(other) =>
+				other.x === tile.x + 1 && other.y === tile.y && other.z === tile.z
+		),
+	}));
+	const dead = new Set<bigint>();
+	let visited = 0;
+	let exhausted = false;
+
+	const solve = async (mask: bigint): Promise<[number, number] | null> => {
+		visited += 1;
+		if (visited % 512 === 0) {
+			await new Promise<void>((resolve) => setTimeout(resolve, 0));
+		}
+		if (isCancelled() || visited > 100_000) {
+			exhausted = true;
+			return null;
+		}
+		if (dead.has(mask)) return null;
+		const free = tiles
+			.map((_, index) => index)
+			.filter((index) => {
+				const block = blockers[index];
+				return (
+					(mask & bits[index]) !== 0n &&
+					(mask & block.above) === 0n &&
+					((mask & block.left) === 0n || (mask & block.right) === 0n)
+				);
+			});
+		for (let i = 0; i < free.length; i += 1) {
+			for (let j = i + 1; j < free.length; j += 1) {
+				const a = free[i];
+				const b = free[j];
+				if (!canMatch(tiles[a], tiles[b])) continue;
+				const next = mask & ~bits[a] & ~bits[b];
+				if (next === 0n || (await solve(next))) return [a, b];
+				if (exhausted) return null;
+			}
+		}
+		dead.add(mask);
+		return null;
+	};
+
+	const pair = await solve((1n << BigInt(tiles.length)) - 1n);
+	if (exhausted) return { kind: 'inconclusive' };
+	if (!pair) return { kind: 'unsolvable' };
+	return { kind: 'pair', tiles: [tiles[pair[0]], tiles[pair[1]]] };
 };
 
 /** One entry per match-pair (16 faces × 2 pairs = 32). */

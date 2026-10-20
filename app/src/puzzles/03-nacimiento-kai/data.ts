@@ -14,7 +14,7 @@ export const suspects: Suspect[] = [
 		name: 'Yoel',
 		shortName: 'Yoel',
 		gender: 'male',
-		clue: 'Estaba en el Balcón, en una ventana. Al este de Isabel y Paco.',
+		clue: 'Estaba en una ventana del Balcón.',
 		portraitSrc: portrait('yoel'),
 	},
 	{
@@ -22,7 +22,7 @@ export const suspects: Suspect[] = [
 		name: 'Carla',
 		shortName: 'Carla',
 		gender: 'female',
-		clue: 'Estaba en la Habitación grande, junto a la cuna. Nadie de esa habitación estaba más al sur.',
+		clue: 'Estaba junto a la cuna, sobre una alfombra.',
 		portraitSrc: portrait('carla'),
 	},
 	{
@@ -31,7 +31,7 @@ export const suspects: Suspect[] = [
 		shortName: 'Kai',
 		gender: 'male',
 		isVictim: true,
-		clue: 'Kai. Estaba a solas con quien lo cuidaba.',
+		clue: 'Kai. Estaba a solas con alguien, lejos del jaleo.',
 		portraitSrc: portrait('kai'),
 	},
 	{
@@ -39,7 +39,7 @@ export const suspects: Suspect[] = [
 		name: 'Eloy e Isa',
 		shortName: 'E+I',
 		gender: 'pair',
-		clue: 'Estaban en el Salón. Nadie del Salón estaba más al oeste ni más al sur.',
+		clue: 'Estaban en una ventana del Salón.',
 		portraitSrc: portrait('eloy-isa'),
 	},
 	{
@@ -47,7 +47,7 @@ export const suspects: Suspect[] = [
 		name: 'Berta',
 		shortName: 'Berta',
 		gender: 'female',
-		clue: 'Estaba sola en la Entrada, junto a un perchero.',
+		clue: 'Estaba en una ventana de la Entrada.',
 		portraitSrc: portrait('berta'),
 	},
 	{
@@ -55,7 +55,7 @@ export const suspects: Suspect[] = [
 		name: 'Isabel y Paco',
 		shortName: 'I+P',
 		gender: 'pair',
-		clue: 'Estaban en el Balcón, en una hamaca. Nadie del Balcón estaba más al sur.',
+		clue: 'Estaban sentados en un banco. No estaban en el Salón.',
 		portraitSrc: portrait('isabel-paco'),
 	},
 	{
@@ -63,7 +63,7 @@ export const suspects: Suspect[] = [
 		name: 'Asun y Luis',
 		shortName: 'A+L',
 		gender: 'pair',
-		clue: 'Estaban en la Cocina, entre la nevera y el fregadero.',
+		clue: 'Estaban entre la nevera y la fregadera.',
 		portraitSrc: portrait('asun-luis'),
 	},
 	{
@@ -71,7 +71,7 @@ export const suspects: Suspect[] = [
 		name: 'Tania y Luis',
 		shortName: 'T+L',
 		gender: 'pair',
-		clue: 'Estaban sentados en el sofá. Al norte de Juani y Luca.',
+		clue: 'Estaban sentados en el sofá, junto a la tele.',
 		portraitSrc: portrait('tania-luis'),
 	},
 	{
@@ -79,7 +79,7 @@ export const suspects: Suspect[] = [
 		name: 'AbuPepe',
 		shortName: 'Abu',
 		gender: 'male',
-		clue: 'Estaba solo en el WC, junto al lavabo.',
+		clue: 'Estaba en el WC, junto al lavabo.',
 		portraitSrc: portrait('abupepe'),
 	},
 	{
@@ -87,13 +87,13 @@ export const suspects: Suspect[] = [
 		name: 'Juani y Luca',
 		shortName: 'J+L',
 		gender: 'pair',
-		clue: 'Estaban en el Salón, junto a la tele. Entre Tania y Luis y Eloy e Isa.',
+		clue: 'Estaban sobre una alfombra del Salón.',
 		portraitSrc: portrait('juani-luca'),
 	},
 ];
 
 /**
- * Casa Hondarribia — salas claras, sin rellenar de muebles:
+ * Casa Hondarribia — salas claras:
  *
  *   Lavadero | WC | Entrada
  *   Cocina   | Habitación grande
@@ -125,20 +125,20 @@ export const roomMatrix: Room[][] = Array.from(
 );
 
 /**
- * Props del caso. Sofá y hamaca son ocupables (la persona va encima).
- * Libres: 0-5, 1-8, 2-1, 3-6, 4-8, 5-2*, 6-3, 7-0, 8-9, 9-4*
- * (* ocupable)
+ * Señuelos: Lavadero (nevera/fregadera), Habitación (banco), 2 sofás, varios huecos al lavabo.
+ * Libres: 0-5, 1-6, 2-1, 3-7, 4-8*, 5-2*, 6-3*, 7-0, 8-9, 9-4*
  */
 export const furnitureCells: Partial<Record<CellKey, FurnitureCell>> = {
-	// Lavadero
-	'0-0': { kind: 'lavadora', role: 'blocking' },
+	// Lavadero — señuelo entre nevera y fregadera (Asun)
+	'0-0': { kind: 'nevera', role: 'blocking' },
+	'0-2': { kind: 'fregadera', role: 'blocking' },
 	'1-2': { kind: 'tendedero', role: 'blocking' },
 
-	// WC — AbuPepe en 0-5, junto al lavabo
+	// WC — AbuPepe en 0-5; también 0-3 y 1-4 tocan el lavabo
 	'0-4': { kind: 'lavabo', role: 'blocking' },
 	'1-3': { kind: 'inodoro', role: 'blocking' },
 
-	// Entrada — Berta en 1-8, junto al perchero
+	// Entrada — Berta en 1-6
 	'1-7': { kind: 'perchero', role: 'blocking' },
 	'0-9': { kind: 'zapatero', role: 'blocking' },
 
@@ -147,21 +147,25 @@ export const furnitureCells: Partial<Record<CellKey, FurnitureCell>> = {
 	'2-2': { kind: 'fregadera', role: 'blocking' },
 	'4-1': { kind: 'mesa', role: 'blocking' },
 
-	// Habitación grande — Carla en 4-8, junto a la cuna
+	// Habitación grande — Carla en 4-8, alfombra junto a la cuna
+	'4-8': { kind: 'alfombra', role: 'occupiable' },
 	'4-7': { kind: 'cuna', role: 'blocking' },
 	'2-7': { kind: 'cama', role: 'occupiable' },
 	'3-9': { kind: 'cambiador', role: 'blocking' },
 
-	// Salón — Tania 5-2 encima del sofá / Juani 6-3 / Eloy 7-0
+	// Salón — Juani en 6-3; Tania en 5-2 (5-4 es el otro sofá)
+	'6-3': { kind: 'alfombra', role: 'occupiable' },
+	'6-1': { kind: 'alfombra', role: 'occupiable' },
 	'5-2': { kind: 'sofá', role: 'occupiable' },
+	'5-4': { kind: 'sofá', role: 'occupiable' },
 	'6-2': { kind: 'tele', role: 'blocking' },
 	'7-2': { kind: 'mesa', role: 'blocking' },
 
-	// Habitación
-	'6-8': { kind: 'cama', role: 'occupiable' },
+	// Habitación — banco señuelo (Isabel)
+	'6-8': { kind: 'banco', role: 'occupiable' },
 
-	// Balcón — Isabel en 9-4 encima de la hamaca
-	'9-4': { kind: 'hamaca', role: 'occupiable' },
+	// Balcón — Isabel en 9-4 sentada en el banco
+	'9-4': { kind: 'banco', role: 'occupiable' },
 	'8-2': { kind: 'planta', role: 'blocking' },
 };
 
@@ -174,9 +178,12 @@ export const FURNITURE_OBJECT_NAMES = [
 ];
 
 export const windowCells: Partial<Record<CellKey, WindowEdge>> = {
-	'8-9': 'bottom',
-	'9-4': 'bottom',
-	'8-4': 'bottom',
+	'1-6': 'bottom', // Berta — Entrada, junto al perchero
+	'0-7': 'top', // señuelo, también junto al perchero, fila del WC
+	'7-0': 'bottom', // Eloy e Isa — Salón
+	'5-0': 'left', // señuelo del Salón, fila de Tania
+	'8-9': 'right', // Yoel — Balcón, muro exterior
+	'9-8': 'bottom', // señuelo del Balcón, fila de Isabel
 };
 
 export const ROOM_ORDER: Room[] = [
@@ -191,11 +198,13 @@ export const ROOM_ORDER: Room[] = [
 ];
 
 export const HINTS = [
-	'AbuPepe está solo en el WC junto al lavabo: solo hay una casilla libre que cumpla eso. Eso cierra su fila y columna.',
-	'Berta sola en la Entrada junto al perchero aísla otra fila y columna de un golpe.',
-	'Asun y Luis están en la Cocina entre nevera y fregadera — una sola casilla encaja.',
-	'En el Salón: Tania va encima del sofá, Juani junto a la tele, y Eloy en el rincón más al oeste y al sur.',
-	'Kai al final: Habitación grande, a solas con Carla (ella está junto a la cuna, la más al sur de esa sala).',
+	'Una persona por fila y por columna. Empieza por lo más claro: Tania y Luis, en el sofá que tiene la tele al lado. En el Salón solo hay un sofá así.',
+	'Carla: la alfombra pegada a la cuna. Solo hay una, así que su fila y su columna quedan cerradas. Kai tendrá que acabar a solas con ella en su misma habitación.',
+	'Eloy e Isa: ventana del Salón. Una de las dos comparte fila con Tania y Luis, así que se descarta. Colócalos en la otra.',
+	'Asun y Luis: entre la nevera y la fregadera. Hay un hueco en el Lavadero y otro en la Cocina. El del Lavadero se come una fila que el WC y la Entrada necesitan. Quédate con el de la Cocina.',
+	'Berta: ventana de la Entrada. De las dos, una deja sin fila a AbuPepe, así que elige la otra. AbuPepe: casilla del WC pegada al lavabo; queda una que no choca con nadie.',
+	'Isabel y Paco: sentados en un banco, pero no en el Salón. Si usan el de la Habitación, Juani se queda sin fila para su alfombra. Van al Balcón. Yoel: ventana del Balcón, la que no comparte fila con Isabel y Paco.',
+	'Juani y Luca: la alfombra del Salón cuya columna siga libre. Kai, al final, en la última casilla que queda: la Habitación grande, a solas con Carla.',
 ];
 
 export const getRoomClass = (room: Room): string => {

@@ -15,7 +15,7 @@ export const suspects: Suspect[] = [
 		name: 'Yoel',
 		shortName: 'Yoel',
 		gender: 'male',
-		clue: 'Estaba en la Avenida, junto a una farola. Nadie de la Avenida estaba más al oeste.',
+		clue: 'Estaba en un carro de chuches junto a un castillo. No estaba en una esquina.',
 		portraitSrc: portrait('yoel'),
 	},
 	{
@@ -23,7 +23,7 @@ export const suspects: Suspect[] = [
 		name: 'Kai',
 		shortName: 'Kai',
 		gender: 'male',
-		clue: 'Estaba en el Castillo, junto a un seto. Nadie del Castillo estaba más al norte.',
+		clue: 'Estaba en un carro de chuches al norte de Haizea.',
 		portraitSrc: portrait('kai'),
 	},
 	{
@@ -31,7 +31,7 @@ export const suspects: Suspect[] = [
 		name: 'Luar',
 		shortName: 'Luar',
 		gender: 'male',
-		clue: 'Estaba en el Espacio, junto a un cohete. Nadie del Espacio estaba más al oeste.',
+		clue: 'Estaba en una ventana del Espacio, entre dos farolas.',
 		portraitSrc: portrait('luar'),
 	},
 	{
@@ -39,7 +39,7 @@ export const suspects: Suspect[] = [
 		name: 'Haizea',
 		shortName: 'Haizea',
 		gender: 'female',
-		clue: 'Estaba en la Avenida, junto a un carro. Nadie de la Avenida estaba más al este.',
+		clue: 'Estaba en una ventana de la Avenida.',
 		portraitSrc: portrait('haizea'),
 	},
 	{
@@ -47,7 +47,7 @@ export const suspects: Suspect[] = [
 		name: 'Saioa',
 		shortName: 'Saioa',
 		gender: 'female',
-		clue: 'Estaba sola en la Plaza, sentada en una banqueta, al este de la fuente.',
+		clue: 'Estaba en un carrusel. No estaba en Cuentos.',
 		portraitSrc: portrait('saioa'),
 	},
 	{
@@ -55,7 +55,7 @@ export const suspects: Suspect[] = [
 		name: 'Unai',
 		shortName: 'Unai',
 		gender: 'male',
-		clue: 'Estaba en el Muelle, al este de un barco. Nadie del parque estaba más al sur.',
+		clue: 'Estaba en una ventana del Muelle, junto a un barco.',
 		portraitSrc: portrait('unai'),
 	},
 	{
@@ -63,7 +63,7 @@ export const suspects: Suspect[] = [
 		name: 'George',
 		shortName: 'George',
 		gender: 'male',
-		clue: 'Estaba solo en la Selva, junto a un tronco.',
+		clue: 'Estaba junto a una montaña rusa. No estaba en Cuentos.',
 		portraitSrc: portrait('george'),
 	},
 	{
@@ -78,7 +78,7 @@ export const suspects: Suspect[] = [
 ];
 
 /**
- * Parque 8×8 — zonas claras, casi vacío:
+ * Parque 8×8 — zonas claras:
  *
  *   Avenida
  *   Selva | Castillo | Cuentos
@@ -104,33 +104,50 @@ export const roomMatrix: Room[][] = Array.from(
 );
 
 /**
- * Solo props citados en las pistas.
- * Libres: 0-0, 1-7, 2-3, 3-4, 4-1, 5-5*, 6-2, 7-6
+ * Atracciones: carro, castillo, carrusel, montaña rusa, fuente, farolas, barcos.
+ * Nudo de backtrack: Kai/Haizea — 2 carros en fila 0 × 2 ventanas en fila 1 = 4 pares
+ * «al norte» plausibles; solo 0-0 + 1-7 sobrevive al cruce con Yoel/George/Unai.
+ * Geometría (≥2 candidatas):
+ * - Yoel: carro+castillo y no esquina (0-0 cae; quedan 1-1 / 2-3 / 3-5).
+ * - Luar: ventana entre dos farolas (6-2 / 7-1).
+ * - Unai: ventana del Muelle junto a un barco (7-4 / 7-6).
+ * Libres: 0-0*, 1-7, 2-3*, 3-4, 4-1, 5-5*, 6-2, 7-6
  */
 export const furnitureCells: Partial<Record<CellKey, FurnitureCell>> = {
-	// Avenida — Yoel 0-0 / Haizea 1-7
-	'0-1': { kind: 'farola', role: 'blocking' },
-	'1-6': { kind: 'carro', role: 'blocking' },
+	// Avenida — Kai en 0-0; 0-5 es el carro señuelo del nudo; castillo esquina (Yoel)
+	'0-0': { kind: 'carro de chuches', role: 'occupiable' },
+	'0-1': { kind: 'castillo', role: 'blocking' },
+	'0-5': { kind: 'carro de chuches', role: 'occupiable' },
+	'1-1': { kind: 'carro de chuches', role: 'occupiable' },
 
-	// Castillo — Kai 2-3 (Carla 3-4 sin mueble propio)
-	'2-4': { kind: 'seto', role: 'blocking' },
+	// Castillo — Yoel en 2-3, carro junto al castillo
+	'2-3': { kind: 'carro de chuches', role: 'occupiable' },
+	'2-4': { kind: 'castillo', role: 'blocking' },
 
-	// Selva — George 4-1
-	'4-0': { kind: 'tronco', role: 'blocking' },
+	// Cuentos — señuelos: carro+castillo (Yoel), carrusel (Saioa), montaña (George)
+	'3-5': { kind: 'carro de chuches', role: 'occupiable' },
+	'3-6': { kind: 'castillo', role: 'blocking' },
+	'4-6': { kind: 'montaña rusa', role: 'blocking' },
+	'4-7': { kind: 'carrusel', role: 'occupiable' },
 
-	// Plaza — Saioa 5-5 encima de la banqueta
+	// Selva — George en 4-1; 3-0 es la otra casilla junto a la montaña rusa
+	'4-0': { kind: 'montaña rusa', role: 'blocking' },
+
+	// Plaza — Saioa en 5-5; montaña rusa señuelo (5-1 / 5-3) para George
+	'5-2': { kind: 'montaña rusa', role: 'blocking' },
 	'5-4': { kind: 'fuente', role: 'blocking' },
-	'5-5': { kind: 'banqueta', role: 'occupiable' },
+	'5-5': { kind: 'carrusel', role: 'occupiable' },
 
-	// Espacio — Luar 6-2
-	'6-1': { kind: 'cohete', role: 'blocking' },
+	// Espacio — Luar en 6-2 entre farolas; 7-1 es el otro hueco (ventana señuelo)
+	'6-1': { kind: 'farola', role: 'blocking' },
+	'6-3': { kind: 'farola', role: 'blocking' },
+	'7-0': { kind: 'farola', role: 'blocking' },
+	'7-2': { kind: 'farola', role: 'blocking' },
+	'7-3': { kind: 'carrusel', role: 'occupiable' },
 
-	// Muelle — Unai 7-6
-	'7-5': { kind: 'barco', role: 'blocking' },
-
-	// Anclas visuales
-	'2-6': { kind: 'taza', role: 'blocking' },
-	'6-5': { kind: 'toldo', role: 'blocking' },
+	// Muelle — Unai junto a barco; ambos ventanas tienen barco al norte
+	'6-4': { kind: 'barco', role: 'blocking' },
+	'6-6': { kind: 'barco', role: 'blocking' },
 };
 
 export const FURNITURE_OBJECT_NAMES = [
@@ -142,17 +159,24 @@ export const FURNITURE_OBJECT_NAMES = [
 ];
 
 export const HINTS = [
-	'Relee las pistas de la Avenida: farola y carro marcan dos extremos. Coloca primero a quien fija el oeste y quien fija el este.',
-	'La Plaza es un caso limpio: alguien sola, una banqueta y una fuente. Si te atascas, empieza por ahí.',
-	'George es el más fácil del parque: solo en la Selva, junto al tronco. Fíjalo y libera fila y columna.',
-	'En el Castillo, el seto restringe al más al norte de esa zona. Deja a Carla para el final: va con quien eligió el regalo.',
-	'Espacio (cohete) y Muelle (barco) cierran el sur del mapa: úsalos cuando el centro ya esté claro.',
-	'Si te falta alguien, tacha casillas imposibles por fila y columna: el hueco que queda suele ser obvio.',
+	'Una persona por fila y por columna. Haizea: ventana de la Avenida. La de la fila de arriba no deja carro al norte para Kai, así que se descarta. Ponla en la ventana de la derecha; la del medio de esa fila ahoga el resto.',
+	'Kai: carro de chuches al norte de Haizea. Con ella a la derecha, encaja el carro de arriba-izquierda. El otro carro de arriba tapa columnas que harán falta.',
+	'Luar: ventana del Espacio, entre dos farolas. El hueco de abajo roba una fila o una columna al final. Colócala en el hueco de arriba.',
+	'Yoel: carro junto a un castillo, y no en esquina. El de la esquina de la Avenida sobra. El del medio de la Avenida pisa la fila de Haizea. El de Cuentos deja a Carla sin pareja en el Castillo. Déjalo en el carro del Castillo.',
+	'Saioa: carrusel, y no en Cuentos. El del Espacio le roba la fila a Unai. Ponla en el carrusel de la Plaza.',
+	'George: junto a una montaña rusa, y no en Cuentos. Las casillas de la Plaza pisan la fila de Saioa. En la Selva, la que comparte columna con Kai se descarta. Usa la otra.',
+	'Unai: ventana del Muelle junto a un barco. La de más a la izquierda deja a Carla en una casilla bloqueada. Ponlo en la otra. Carla, al final, en la casilla libre del Castillo, a solas con Yoel, que eligió el regalo.',
 ];
 
 export const windowCells: Partial<Record<CellKey, WindowEdge>> = {
-	'7-6': 'bottom',
-	'1-7': 'right',
+	'1-7': 'right', // Haizea — Avenida, muro exterior
+	'1-3': 'bottom', // señuelo Avenida — también fila de abajo (nudo Kai/Haizea)
+	'0-6': 'top', // señuelo Avenida — fila de arriba (sin carro al norte)
+	'6-2': 'top', // Luar — Espacio, entre farolas
+	'7-1': 'bottom', // señuelo Espacio — también entre farolas
+	'6-0': 'left', // señuelo Espacio — ventana sin el «entre»
+	'7-6': 'bottom', // Unai — Muelle, junto a barco
+	'7-4': 'bottom', // señuelo Muelle — también junto a barco
 };
 
 export const ROOM_ORDER: Room[] = [

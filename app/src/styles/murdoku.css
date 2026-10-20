@@ -413,40 +413,67 @@
 	font: inherit;
 	font-weight: 700;
 	cursor: pointer;
-	text-decoration: underline;
-	text-decoration-thickness: 1.5px;
-	text-underline-offset: 2px;
+	text-decoration: none;
 	box-decoration-break: clone;
 	-webkit-box-decoration-break: clone;
 	transition: background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
 }
 
+.clue-keyword.has-punct {
+	/* Keep "barco." / "Muelle," as one unit so the mark never orphans. */
+	white-space: nowrap;
+}
+
+.clue-keyword-label {
+	text-decoration: underline;
+	text-decoration-thickness: 1.5px;
+	text-underline-offset: 2px;
+	text-decoration-color: inherit;
+}
+
+.clue-punct {
+	font-weight: inherit;
+	text-decoration: none;
+}
+
 .clue-keyword[data-type='room'] {
 	color: #2f4a32;
-	text-decoration-color: rgba(61, 107, 69, 0.55);
 	background: rgba(61, 107, 69, 0.08);
+}
+
+.clue-keyword[data-type='room'] .clue-keyword-label {
+	text-decoration-color: rgba(61, 107, 69, 0.55);
 }
 
 .clue-keyword[data-type='object'] {
 	color: #2a3a4a;
-	text-decoration-color: rgba(66, 86, 106, 0.55);
 	background: rgba(66, 86, 106, 0.08);
+}
+
+.clue-keyword[data-type='object'] .clue-keyword-label {
+	text-decoration-color: rgba(66, 86, 106, 0.55);
 }
 
 .clue-keyword[data-type='person'] {
 	color: #5c241c;
-	text-decoration-color: rgba(139, 58, 42, 0.5);
 	background: rgba(139, 58, 42, 0.08);
+}
+
+.clue-keyword[data-type='person'] .clue-keyword-label {
+	text-decoration-color: rgba(139, 58, 42, 0.5);
 }
 
 .clue-keyword[data-type='keyword'] {
 	color: #5a4020;
-	text-decoration-color: rgba(180, 92, 58, 0.5);
 	background: rgba(199, 159, 42, 0.1);
 	font-family: var(--font-stamp);
 	font-size: 0.92em;
 	letter-spacing: 0.02em;
 	font-weight: 400;
+}
+
+.clue-keyword[data-type='keyword'] .clue-keyword-label {
+	text-decoration-color: rgba(180, 92, 58, 0.5);
 }
 
 .clue-keyword:hover,
@@ -461,6 +488,9 @@
 .clue-keyword.is-active {
 	background: #f3e7c4;
 	color: #6a3a1a;
+}
+
+.clue-keyword.is-active .clue-keyword-label {
 	text-decoration-color: #b45c3a;
 }
 
@@ -617,6 +647,19 @@
 	opacity: 0.78;
 }
 
+.cell-furniture.has-occupant:has([data-kind='alfombra']) {
+	inset: 8% 5% 4%;
+	opacity: 0.95;
+}
+
+.furniture-icon[data-kind='alfombra']::before {
+	display: none;
+}
+
+.furniture-icon[data-kind='alfombra'] .furniture-svg {
+	filter: none;
+}
+
 .furniture-icon {
 	position: relative;
 	display: grid;
@@ -698,7 +741,9 @@
 	border-left: 3px solid var(--line);
 }
 
+.cell.window-top,
 .cell.window-bottom,
+.cell.window-left,
 .cell.window-right {
 	z-index: 2;
 }
@@ -716,11 +761,25 @@
 	animation: window-breathe 4.2s ease-in-out infinite;
 }
 
+.window-top .cell-window {
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 5px;
+}
+
 .window-bottom .cell-window {
 	bottom: 0;
 	left: 0;
 	width: 100%;
 	height: 5px;
+}
+
+.window-left .cell-window {
+	top: 0;
+	left: 0;
+	width: 5px;
+	height: 100%;
 }
 
 .window-right .cell-window {
@@ -1792,8 +1851,10 @@
 
 	.suspect-text {
 		font-size: 0.75rem;
-		overflow-wrap: anywhere;
-		hyphens: auto;
+		/* break-word only if a token itself overflows — never mid-punctuation */
+		overflow-wrap: break-word;
+		word-break: normal;
+		hyphens: manual;
 	}
 
 	.board-grid {

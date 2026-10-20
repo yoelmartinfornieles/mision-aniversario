@@ -414,3 +414,9 @@
 		letter-spacing: 0.02em;
 	}
 }
+
+
+.mahjong-tile.is-rescue .mahjong-tile-face {
+	outline: 3px solid #477454;
+	outline-offset: 1px;
+}
