@@ -52,27 +52,35 @@ const s = (
 	...(opts.featured ? { featured: true } : {}),
 });
 
+/** Fisher–Yates shuffle (stable copy for the visit). */
+export const shuffleSuspects = <T,>(
+	items: T[],
+	random: () => number = Math.random
+): T[] => {
+	const next = [...items];
+	for (let i = next.length - 1; i > 0; i -= 1) {
+		const j = Math.floor(random() * (i + 1));
+		const current = next[i]!;
+		next[i] = next[j]!;
+		next[j] = current;
+	}
+	return next;
+};
+
 /** Featured always; fill the rest with a random sample (stable for the visit). */
 export const pickDeskSuspects = (
 	all: FinaleSuspect[],
 	max: number,
 	random: () => number = Math.random
 ): FinaleSuspect[] => {
-	if (all.length <= max) return all;
+	if (all.length <= max) return shuffleSuspects(all, random);
 	const featured = all.filter((suspect) => suspect.featured);
 	const rest = all.filter((suspect) => !suspect.featured);
 	const slots = Math.max(0, max - featured.length);
-	if (slots === 0) return featured.slice(0, max);
+	if (slots === 0) return shuffleSuspects(featured.slice(0, max), random);
 
-	const pool = [...rest];
-	for (let i = pool.length - 1; i > 0; i -= 1) {
-		const j = Math.floor(random() * (i + 1));
-		const current = pool[i]!;
-		pool[i] = pool[j]!;
-		pool[j] = current;
-	}
-
-	return [...featured, ...pool.slice(0, slots)];
+	const pool = shuffleSuspects(rest, random);
+	return shuffleSuspects([...featured, ...pool.slice(0, slots)], random);
 };
 
 export const FINALE_SUSPECTS: FinaleSuspect[] = [

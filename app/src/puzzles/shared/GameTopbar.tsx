@@ -47,7 +47,20 @@ export const GameTopbar = ({
 				disabled={hintsDisabled}
 				aria-label="Pista"
 			>
-				<span aria-hidden="true">💡</span>
+				<svg
+					className="hint-icon"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="1.8"
+					strokeLinecap="round"
+					strokeLinejoin="round"
+					aria-hidden="true"
+					focusable="false"
+				>
+					<path d="M9 16v-1c0-1.5-3-2.5-3-6a6 6 0 0 1 12 0c0 3.5-3 4.5-3 6v1Z" />
+					<path d="M9 19h6M10 22h4M12 1v1M2 8H1M23 8h-1M4 3l1 1M20 3l-1 1" />
+				</svg>
 				<span className="hint-label">Pista</span>
 			</button>
 			{timer}

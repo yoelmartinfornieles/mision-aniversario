@@ -27,6 +27,7 @@ import {
 import {
 	FINALE_SUSPECTS,
 	pickDeskSuspects,
+	shuffleSuspects,
 	type FinaleSuspect,
 } from '@/pages/finaleSuspects';
 
@@ -332,6 +333,8 @@ export const FinalePage = () => {
 	const [narrowDesk, setNarrowDesk] = useState(
 		() => window.matchMedia('(max-width: 560px)').matches
 	);
+	/** Shuffled once per visit: gallery order + desk appear delays. */
+	const [shuffledSuspects] = useState(() => shuffleSuspects(FINALE_SUSPECTS));
 	/** One random mobile sample per visit (Kai/Yoel always included). */
 	const [mobileDeskSample] = useState(() =>
 		pickDeskSuspects(FINALE_SUSPECTS, MOBILE_DESK_MAX)
@@ -431,7 +434,7 @@ export const FinalePage = () => {
 		!reducedMotion && (phase === 'sending' || phase === 'sent');
 	const showSuspects =
 		phase === 'ask' || (phase === 'sending' && reducedMotion);
-	const deskSuspects = narrowDesk ? mobileDeskSample : FINALE_SUSPECTS;
+	const deskSuspects = narrowDesk ? mobileDeskSample : shuffledSuspects;
 
 	const closedPanel = (
 		<ClosedPanel
@@ -448,7 +451,7 @@ export const FinalePage = () => {
 		return (
 			<FinaleGallery
 				kind={view}
-				suspects={FINALE_SUSPECTS}
+				suspects={shuffledSuspects}
 				onKind={setView}
 			/>
 		);

@@ -1,6 +1,6 @@
 import { useEffect, useState, type CSSProperties } from 'react';
 
-export const PROOF_COUNT = 79;
+export const PROOF_COUNT = 110;
 
 /** Slow at the ends, fast in the middle (1 → 0 → 1). */
 const slowFactor = (t: number) => 0.5 + 0.5 * Math.cos(Math.PI * 2 * Math.min(1, Math.max(0, t)));
@@ -19,7 +19,7 @@ const ease = (from: number, to: number, t: number) => from * (to / from) ** t;
 
 const dealFlight = (t: number) => FLIGHT_MIN + (FLIGHT_MAX - FLIGHT_MIN) * slowFactor(t);
 
-/** Spawn times for the 79 table cards: lento → ráfaga → aterrizaje. */
+/** Spawn times for the 110 table cards: lento → ráfaga → aterrizaje. */
 const buildDealSchedule = (): number[] => {
 	const schedule = [0];
 	let time = 0;
@@ -48,6 +48,7 @@ type ProofDrop = {
 	src: string;
 	width: number;
 	height: number;
+	x: number;
 	y: number;
 	r: number;
 	size: number;
@@ -184,6 +185,7 @@ export const ProofRain = ({ spawning }: { spawning: boolean }) => {
 		let cursor = 0;
 		let nextId = 0;
 		let timer = 0;
+		let tailStarted = false;
 
 		// Keep the pool warm for any still missing after the ask-screen prefetch.
 		void runPool(order, PRELOAD_CONCURRENCY, loadProof);
@@ -197,6 +199,7 @@ export const ProofRain = ({ spawning }: { spawning: boolean }) => {
 				const index = order[dealIndex % order.length];
 				const anchor = anchors[dealIndex % anchors.length];
 				const scattered = dealIndex >= PROOF_COUNT;
+				if (scattered) tailStarted = true;
 				const dealT =
 					PROOF_COUNT <= 1 ? 0 : Math.min(1, dealIndex / (PROOF_COUNT - 1));
 				const fastT = scattered
@@ -204,8 +207,7 @@ export const ProofRain = ({ spawning }: { spawning: boolean }) => {
 					: 0;
 				cursor += 1;
 				nextId += 1;
-				void loadProof(index);
-				added.push({
+				const drop: ProofDrop = {
 					id: nextId,
 					proofNumber: String(index + 1).padStart(2, '0'),
 					src: proofSrc(index),
@@ -223,14 +225,14 @@ export const ProofRain = ({ spawning }: { spawning: boolean }) => {
 						? ease(360, 720, fastT)
 						: dealFlight(dealT),
 					pin: PINS[nextId % PINS.length],
-				});
-			}
-			if (added.length > 0) {
-				const keepAll = cursor <= PROOF_COUNT;
-				setDrops((prev) => {
-					const next = [...prev, ...added];
-					if (keepAll || next.length <= pileCap) return next;
-					return next.slice(next.length - pileCap);
+				};
+
+				void loadProof(index).then((loaded) => {
+					if (!loaded) return;
+					setDrops((prev) => {
+						const next = [...prev, drop].sort((a, b) => a.id - b.id);
+						return tailStarted ? next.slice(next.length - pileCap) : next;
+					});
 				});
 			}
 			if (cursor >= schedule.length) return;

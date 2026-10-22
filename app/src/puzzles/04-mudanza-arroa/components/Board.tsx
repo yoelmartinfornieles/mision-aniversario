@@ -1,9 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import {
-	TILE_DEPTH,
-	TILE_HEIGHT,
-	TILE_WIDTH,
-} from '../constants';
+import { TILE_DEPTH, TILE_HEIGHT, TILE_WIDTH } from '../constants';
 import { LAYOUT } from '../data';
 import { boardBounds } from '../logic';
 import type { MahjongTile } from '../types';
@@ -44,18 +40,13 @@ export const Board = ({
 
 	useEffect(() => {
 		const frame = frameRef.current;
-		const parent = frame?.parentElement;
-		if (!frame || !parent) return;
+		if (!frame) return;
 
-		const updateScale = () => {
-			const available = parent.clientWidth;
-			if (available <= 0) return;
-			setScale(Math.min(1, available / width));
-		};
-
-		updateScale();
-		const observer = new ResizeObserver(updateScale);
-		observer.observe(parent);
+		const observer = new ResizeObserver(([entry]) => {
+			if (entry.contentRect.width <= 0) return;
+			setScale(entry.contentRect.width / width);
+		});
+		observer.observe(frame);
 		return () => observer.disconnect();
 	}, [width]);
 
@@ -69,14 +60,14 @@ export const Board = ({
 		[tiles]
 	);
 
-	const scaledWidth = width * scale;
-	const scaledHeight = height * scale;
-
 	return (
 		<div
 			className="mahjong-board-frame"
 			ref={frameRef}
-			style={{ width: scaledWidth, height: scaledHeight }}
+			style={{
+				aspectRatio: `${width} / ${height}`,
+				['--mahjong-board-ratio' as string]: width / height,
+			}}
 		>
 			<div
 				className="mahjong-board"
@@ -98,10 +89,7 @@ export const Board = ({
 				/>
 				<div className="mahjong-background-veil" aria-hidden />
 				{sorted.map((tile) => {
-					const left =
-						(tile.x - bounds.minX) * TILE_WIDTH +
-						tile.z * TILE_DEPTH +
-						12;
+					const left = (tile.x - bounds.minX) * TILE_WIDTH + TILE_DEPTH + 12;
 					const top =
 						(tile.y - bounds.minY) * TILE_HEIGHT -
 						tile.z * TILE_DEPTH +

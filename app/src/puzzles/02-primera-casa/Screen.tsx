@@ -72,7 +72,11 @@ export const Puzzle02Screen = () => {
 							onClick={game.rotateSelected}
 							title="Rotar 60° (R)"
 						>
-							↻ Rotar
+							<svg className="tool-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+								<path d="M20 11a8 8 0 1 0-2 6" />
+								<path d="M20 4v7h-7" />
+							</svg>
+							<span>Rotar</span>
 						</button>
 						<button
 							type="button"
@@ -80,21 +84,32 @@ export const Puzzle02Screen = () => {
 							onClick={game.flipSelected}
 							title="Voltear cara (F)"
 						>
-							⇋ Voltear
+							<svg className="tool-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+								<path d="M12 3v18M8 6 3 12l5 6V6ZM16 6l5 6-5 6V6Z" />
+							</svg>
+							<span>Voltear</span>
 						</button>
 						<button
 							type="button"
 							className="tool-button small"
 							onClick={game.handleUndo}
 						>
-							↶ Deshacer
+							<svg className="tool-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+								<path d="M4 8h9a6 6 0 0 1 0 12" />
+								<path d="m9 3-5 5 5 5" />
+							</svg>
+							<span>Deshacer</span>
 						</button>
 						<button
 							type="button"
 							className="tool-button secondary"
 							onClick={game.handleClear}
 						>
-							✎ Limpiar
+							<svg className="tool-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+								<path d="M4.5 14.5 14 5l4.5 4.5-9.5 9.5H4.5v-4.5Z" />
+								<path d="M12.2 6.8 17.2 11.8M4.5 19.5h15" />
+							</svg>
+							<span>Limpiar</span>
 						</button>
 					</div>
 					<PieceTray

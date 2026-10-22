@@ -128,7 +128,7 @@ export const MurdokuBoard = ({
 						disabled={disabled || isBlocking}
 					>
 						{windowEdge && <span className="cell-window" aria-hidden="true" />}
-						{furniture && (
+						{furniture && furniture.kind !== 'barra' && (
 							<span
 								className={`cell-furniture${occupant ? ' has-occupant' : ''}`}
 								aria-hidden="true"
@@ -160,6 +160,37 @@ export const MurdokuBoard = ({
 							</span>
 						)}
 					</button>
+				);
+			})
+		)}
+		{roomMatrix.flatMap((row, rowIndex) =>
+			row.flatMap((_, columnIndex) => {
+				if (
+					furnitureCells[cellKey(rowIndex, columnIndex)]?.kind !== 'barra' ||
+					furnitureCells[cellKey(rowIndex - 1, columnIndex)]?.kind === 'barra'
+				) {
+					return [];
+				}
+				let length = 1;
+				while (
+					rowIndex + length < rows &&
+					furnitureCells[cellKey(rowIndex + length, columnIndex)]?.kind === 'barra'
+				) {
+					length++;
+				}
+				return (
+					<img
+						key={`bar-${rowIndex}-${columnIndex}`}
+						className="board-continuous-bar"
+						src={`${import.meta.env.BASE_URL}puzzles/furniture/bar.png`}
+						alt=""
+						aria-hidden="true"
+						draggable={false}
+						style={{
+							gridColumn: `${columnIndex + 1} / span 1`,
+							gridRow: `${rowIndex + 1} / span ${length}`,
+						}}
+					/>
 				);
 			})
 		)}

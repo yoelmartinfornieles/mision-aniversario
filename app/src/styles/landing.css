@@ -522,7 +522,7 @@
 }
 
 .continue-form .tool-button,
-.tool-button.secondary {
+.landing-shell .tool-button.secondary {
 	width: auto;
 	min-width: 120px;
 	padding: 0.85rem 1.2rem;
@@ -542,7 +542,7 @@
 }
 
 .continue-form .tool-button:hover,
-.tool-button.secondary:hover {
+.landing-shell .tool-button.secondary:hover:not(:disabled) {
 	transform: translateY(-1px);
 	box-shadow:
 		0 3px 0 var(--color-manila-edge),
@@ -550,7 +550,7 @@
 }
 
 .continue-form .tool-button:active,
-.tool-button.secondary:active {
+.landing-shell .tool-button.secondary:active:not(:disabled) {
 	transform: translateY(1px);
 	box-shadow:
 		0 1px 0 var(--color-manila-edge),
@@ -581,9 +581,80 @@
 	text-underline-offset: 3px;
 }
 
+.finale-links {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 2px;
+}
+
+.finale-hint-button,
+.finale-view-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.45rem;
+	min-height: 42px;
+	padding: 0.5rem 0.75rem;
+	border: 1px solid var(--color-accent-line);
+	border-radius: 6px;
+	background:
+		linear-gradient(180deg, rgba(255, 252, 245, 0.4), transparent 55%),
+		var(--color-paper);
+	color: var(--color-ink);
+	font-family: var(--font-stamp);
+	font-size: 0.85rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	box-shadow: 0 2px 0 rgba(69, 52, 32, 0.25);
+	cursor: pointer;
+}
+
+.finale-hint-button svg {
+	width: 1.1rem;
+	height: 1.1rem;
+}
+
+.finale-hint-button:hover:not(:disabled),
+.finale-view-button:hover:not(:disabled) {
+	transform: translateY(-1px);
+}
+
+.finale-view-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 10px;
+}
+
+.finale-view-row .finale-view-button {
+	flex: 1 1 140px;
+}
+
+.finale-hint-button:disabled {
+	opacity: 0.55;
+	cursor: not-allowed;
+}
+
 .landing-card .text-link,
+.hints-modal .text-link,
 .landing-hero .text-link {
 	color: var(--color-ink-soft);
+}
+
+/* Primary + “Volver…” must stack with air — not sit flush beside the button. */
+.landing-card .primary-button,
+.save-code-modal .primary-button,
+.instructions-modal .primary-button {
+	display: block;
+}
+
+.landing-card .primary-button + .text-link,
+.save-code-modal .primary-button + .text-link,
+.instructions-modal .primary-button + .text-link,
+.instructions-modal .tool-button + .text-link {
+	display: block;
+	margin-top: 18px;
 }
 
 .text-link.danger {
@@ -708,6 +779,8 @@
 }
 
 .finale-shell {
+	--paper: var(--color-paper);
+	--line: var(--color-ink);
 	position: relative;
 	justify-content: center;
 	padding-block: max(24px, env(safe-area-inset-top, 0px))
@@ -1217,7 +1290,6 @@
 	--x: 50%;
 	--y: 46%;
 	--r: 0deg;
-	--dx: 0px;
 	--size: 170px;
 	--dur: 0.56s;
 	position: absolute;
@@ -1226,21 +1298,21 @@
 	width: var(--size);
 	margin: 0;
 	pointer-events: none;
-	animation: proof-deal var(--dur) cubic-bezier(0.16, 0.84, 0.28, 1) forwards;
+	transform: translate(-50%, -50%) rotate(var(--r));
+	animation: proof-deal var(--dur) ease-out both;
 }
 
+/* The card never moves: it fades in from the back, so nothing can jolt on landing. */
 @keyframes proof-deal {
-	0% {
+	from {
 		opacity: 0;
-		transform: translate3d(calc(-50% + var(--dx)), calc(-50% - 24vh), 0)
-			rotate(calc(var(--r) * 0.3)) scale(0.92);
+		scale: 0.82;
+		filter: brightness(0.55) blur(2px);
 	}
-	40% {
+	to {
 		opacity: 1;
-	}
-	100% {
-		opacity: 1;
-		transform: translate3d(-50%, -50%, 0) rotate(var(--r)) scale(1);
+		scale: 1;
+		filter: none;
 	}
 }
 
@@ -1307,4 +1379,97 @@
 .proof-message-card h1 {
 	font-size: clamp(1.65rem, 4.6vw, 2.45rem);
 	line-height: 1.12;
+}
+
+.finale-gallery-shell {
+	justify-content: flex-start;
+	align-items: stretch;
+	gap: 20px;
+	padding: max(48px, env(safe-area-inset-top, 0px)) clamp(14px, 4vw, 48px) 48px;
+}
+
+.finale-gallery-head {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	text-align: center;
+	color: var(--color-paper);
+}
+
+.finale-gallery-head h1 {
+	margin: 0;
+}
+
+.finale-gallery-head .finale-view-row {
+	justify-content: center;
+}
+
+.finale-gallery-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(clamp(130px, 22vw, 220px), 1fr));
+	gap: clamp(10px, 2vw, 18px);
+	width: min(1200px, 100%);
+	margin: 0 auto;
+	padding: 0;
+	list-style: none;
+}
+
+.finale-gallery-item {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	width: 100%;
+	padding: 8px 8px 6px;
+	border: 0;
+	background: var(--color-paper);
+	color: var(--color-ink);
+	font-family: var(--font-stamp);
+	font-size: 0.72rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+	cursor: pointer;
+}
+
+.finale-gallery-item img {
+	display: block;
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	object-fit: cover;
+}
+
+.finale-lightbox {
+	position: fixed;
+	inset: 0;
+	z-index: 100;
+	display: grid;
+	place-items: center;
+	padding: 20px;
+	background: rgba(10, 8, 6, 0.9);
+}
+
+.finale-lightbox figure {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin: 0;
+	padding: 10px 10px 8px;
+	background: var(--color-paper);
+	color: var(--color-ink);
+	font-family: var(--font-stamp);
+	text-align: center;
+	text-transform: uppercase;
+}
+
+.finale-lightbox img {
+	max-width: min(92vw, 900px);
+	max-height: 74dvh;
+	object-fit: contain;
+}
+
+.finale-lightbox-close {
+	position: absolute;
+	top: max(16px, env(safe-area-inset-top, 0px));
+	right: 16px;
 }

@@ -39,9 +39,9 @@
 		var(--paper-fiber),
 		var(--paper);
 	background-size: auto, 140px 140px, auto;
-	border: 2px solid var(--line);
+	border: 1px solid #968974;
 	border-radius: 8px;
-	box-shadow: var(--shadow-panel);
+	box-shadow: 0 2px 4px rgba(46, 41, 35, 0.12);
 }
 
 .hex-shell .topbar-actions,
@@ -75,9 +75,15 @@
 		var(--paper-fiber),
 		var(--paper);
 	background-size: auto, 140px 140px, auto;
-	border: 2px solid var(--line);
+	border: 1px solid #ad9f89;
 	border-radius: 8px;
-	box-shadow: var(--shadow-panel);
+	box-shadow: 0 2px 5px rgba(46, 41, 35, 0.1);
+}
+
+.hex-side,
+.mahjong-side {
+	border-color: #c1b39c;
+	box-shadow: 0 1px 2px rgba(46, 41, 35, 0.06);
 }
 
 .hex-board-panel::after,
@@ -133,7 +139,7 @@
 	.hex-topbar,
 	.mahjong-topbar {
 		display: grid;
-		grid-template-columns: auto minmax(0, 1fr) auto auto;
+		grid-template-columns: auto minmax(0, 1fr) auto auto auto;
 		align-items: center;
 		gap: 6px;
 		min-height: 52px;
